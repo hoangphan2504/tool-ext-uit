@@ -1,5 +1,8 @@
+//const { log } = require("console");
+
 console.log("Content script is runnung", chrome);
 const bodyDOM = document.querySelector("body");
+let selectionText = "";
 
 
 // lay duoc selection text
@@ -52,7 +55,7 @@ function getRangeSelectionText() {
     return selectionRect;
 }
 
-function renderTool(selectionTextRange){
+function renderTool(selectionTextRange, selectionText){
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-ext-uit';
     const tooltipIcon = document.createElement('div');
@@ -93,25 +96,37 @@ function renderTool(selectionTextRange){
 
     tooltipWrapper.style.position = 'absolute';
     tooltipWrapper.style.background = 'white';
+    tooltipWrapper.style.cursor = 'pointer';
     tooltipWrapper.style.padding = '4px';
     tooltipWrapper.style.top = top;
     tooltipWrapper.style.left = left;
 
-    
+
     bodyDOM.appendChild(tooltipWrapper);
+
+    if(tooltipWrapper) {
+    tooltipWrapper.addEventListener("click", async () => {
+        console.log("hihi", selectionText);
+        if(selectionText.length > 0){
+            
+            const result = await fetch(`http://localhost:3000/api/check?input=${selectionText}&output=sg`);
+        }
+        console.log(await result.json);
+    });
+}   
 
 }
 
 
 
 bodyDOM.addEventListener("mouseup", ()=>{
-    const selectionText= getSelectedText();
-    if(selectionText && selectionText.length >0) {  
+    selectionText= getSelectedText();
+    if(selectionText.length >0) {  
         const selectionTextRange = getRangeSelectionText();
 
         // console.log(selectionText);    
         // console.log(selectionTextRange);
-        renderTool(selectionTextRange);
+        renderTool(selectionTextRange, selectionText);
 
         setTimeout(() => {
             const tooltipWrapper = document.querySelector('div#research-ext-uit'); 
@@ -120,4 +135,4 @@ bodyDOM.addEventListener("mouseup", ()=>{
         }, 3000)
     }
 })
-//hien thi duoc icon extension
+// lang nghe khi nguoi dung click vao icon translator 

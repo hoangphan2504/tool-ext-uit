@@ -1,18 +1,22 @@
+const cors = require('cors');   
 const express = require('express');
 
 const app = express();
 
+app.use(cors());
 app.get('/', (req, res) => {
-    res.send("API  running")
+    res.send("API checking ")
 })
 
 app.get("/api/check", async (req, res) => {
-    const kw = req.query.kw;
     const input = req.query.input;
-    const output = req.query.output;
-
-    if(kw && input && output) {
-        // check grammar by chat GPT
+    const output = req.query.output
+    console.log("api check");
+    if(input) {
+        if(input === "Hello"){
+            const result =  res.json({output: "Xin chao"})
+            console.log(result);
+        }
     }
 })
 
