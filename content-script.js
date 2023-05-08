@@ -1,4 +1,5 @@
 //const { log } = require("console");
+var {popup} = require("./popup.js");
 
 console.log("Content script is runnung", chrome);
 const bodyDOM = document.querySelector("body");
@@ -55,7 +56,7 @@ function getRangeSelectionText() {
     return selectionRect;
 }
 
-function renderTool(selectionTextRange, selectionText){
+function renderTool(selectionTextRange, selectionText, answer){
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-ext-uit';
     const tooltipIcon = document.createElement('div');
@@ -109,12 +110,47 @@ function renderTool(selectionTextRange, selectionText){
         console.log("hihi", selectionText);
         if(selectionText.length > 0){
             
-            const result = await fetch(`http://localhost:3000/api/check?input=${selectionText}&output=sg`);
+            const result = await fetch(`http://localhost:3000/api/check?input=${selectionText}`);
+            const resultJson = await result.json();
+            renderResult(selectionTextRange, selectionText, resultJson.output);
         }
-        console.log(await result.json);
     });
 }   
 
+}
+function renderResult(selectionTextRange, selectionText, answer){
+    const tooltipWrapper = document.createElement('div');
+    tooltipWrapper.id = 'research-result-ext-uit';
+    const tooltipContainer = document.createElement('div');
+    tooltipContainer.classList.add("research-result-ext-container");
+     tooltipContainer.innerHTML = `
+     <label for="">
+        Input: 
+         <span>${selectionText}</span>
+    </label>
+  
+     <label for="">
+         Output:
+         <span>${answer}</span>
+     </label>
+     `;
+
+    //tooltipContainer.innerHTML = popup(selectionText, answer);
+    tooltipWrapper.appendChild(tooltipContainer);
+
+    // determine top, left of tooltip
+    const top = selectionTextRange.top + selectionTextRange.height + 1 + 'px';
+    const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth/2) + 'px';
+
+    tooltipWrapper.style.position = 'absolute';
+    tooltipWrapper.style.background = 'white';
+    tooltipWrapper.style.cursor = 'pointer';
+    tooltipWrapper.style.padding = '4px';
+    tooltipWrapper.style.top = top;
+    tooltipWrapper.style.left = left;
+
+
+    bodyDOM.appendChild(tooltipWrapper);
 }
 
 

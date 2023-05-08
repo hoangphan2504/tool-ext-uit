@@ -10,14 +10,14 @@ app.get('/', (req, res) => {
 
 app.get("/api/check", async (req, res) => {
     const input = req.query.input;
-    const output = req.query.output
     console.log("api check");
     if(input) {
         if(input === "Hello"){
-            const result =  res.json({output: "Xin chao"})
+            const result =  res.status(200).json({output: "Xin chao"})
             console.log(result);
         }
     }
+    res.status(200).json({output:"loi"});
 })
 
 app.listen(3000, function (err) {
