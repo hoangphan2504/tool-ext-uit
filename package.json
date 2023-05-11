@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "cors": "^2.8.5"
+    "bard-builder": "^1.7.1",
+    "cors": "^2.8.5",
+    "python-shell": "^5.0.0"
   },
   "type": "module"
 }

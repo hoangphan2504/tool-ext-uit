@@ -1,5 +1,5 @@
 //const { log } = require("console");
-var {popup} = require("./popup.js");
+//var {popup} = require("./popup.js");
 
 console.log("Content script is runnung", chrome);
 const bodyDOM = document.querySelector("body");
@@ -139,7 +139,7 @@ function renderResult(selectionTextRange, selectionText, answer){
     tooltipWrapper.appendChild(tooltipContainer);
 
     // determine top, left of tooltip
-    const top = selectionTextRange.top + selectionTextRange.height + 1 + 'px';
+    const top = selectionTextRange.top + selectionTextRange.height - 2 + 'px';
     const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth/2) + 'px';
 
     tooltipWrapper.style.position = 'absolute';
@@ -156,6 +156,10 @@ function renderResult(selectionTextRange, selectionText, answer){
 
 
 bodyDOM.addEventListener("mouseup", ()=>{
+    const tooltipResult = document.querySelector('div#research-result-ext-uit')
+    if(tooltipResult) tooltipResult.remove();
+
+
     selectionText= getSelectedText();
     if(selectionText.length >0) {  
         const selectionTextRange = getRangeSelectionText();

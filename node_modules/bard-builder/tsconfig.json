@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "lib": ["ES2021"],
+        "target": "es6",
+        "module": "commonjs",
+        "allowJs": true,
+        "checkJs": false,
+        "declaration": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "rootDir": ".",
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "exclude": ["node_modules", "dist", "docs", "tests", ".github", "examples"]
+}
