@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UIT Extension</title>
+  <style>
+      .box {
+        position:absolute;
+        width: 200px; 
+        height: 13px;
+        top:45%;
+        left:45%;
+        transform: (-50%,-50%);
+        max-width: 905px;
+        max-height: 951px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background: linear-gradient( rgba(22,1,29,1) 100% , rgba(1,10,80,1) 100% , rgba(249,56,161,1) 100%,rgba(247,5,126,1) 100%,rgba(214,165,253,1) 100%, rgba(217,217,217,1) 100%);
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-radius: 5%;
+        opacity: 0.9;
+       z-index: 1000;
+      }
+    .text {
+        text-align:right ;
+        font-size: 18px;
+        color: white;
+        overflow: hidden;
+        font-family: cursive; 
+        position: sticky;
+        white-space: nowrap;
+        margin: -3%;
+    }
+    .loader {
+  position:absolute;
+  top: 50%;
+  left: 15%;
+  transform: translate(-50%, -50%);
+  
+  display: flex;
+  
+  align-items: center;
+  justify-content: center;
+  
+  transition: opacity 0.75s, visibility 0.75s;
+  
+}
+
+.loader--hidden {
+  opacity: 0;
+  visibility: visible;
+}
+
+.loader::after {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border: 5px solid white;
+  border-top-color: gray;
+  border-radius: 50%;
+  animation: loading 3s linear infinite;  
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(1turn);
+  }
+  to {
+    transform: rotate(5turn);
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class = "text">
+         <span> UIT EXTENSION  </span>  
+        </div>
+          <div class ="loader">
+        </div>       
+  </div>
+ 
+   
+<script>window.addEventListener("load", () => {
+    const loader = document.querySelector(".loader");
+  
+    loader.addEventListener("transitionend", () => {
+      document.body.removeChild(loader);
+      
+    });
+  });</script>
+</body>
+</html>
