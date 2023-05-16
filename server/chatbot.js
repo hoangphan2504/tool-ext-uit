@@ -2,19 +2,22 @@ const { Configuration, OpenAIApi } = require("openai");
 const fs = require("fs");
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: "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",
 });
 
-async function main() {
+async function chat(input) {
   const openai = new OpenAIApi(configuration);
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
       {
         role: "user",
-        content: "check the latex code below, whether the grammar and vocabulary is right (return 'No error') else suggest how to fix: \begin{abstract} Pesson re-identification (ReID) play a crucial role in video surveillance with the aim to search a specific person across disjoint cameras, and it has progressed notably in recent years. However, visible cameras may not  able  record enough information about the pedestrian’s appearance under the condition for low illumination. \end{abstract}"
+        content: `check grammar and give me the correct answer only: ${input}`
       },
     ],
   });
-  console.log(response.data.choices);
+  console.log(response.data.choices[0].message.content);
+  return response.data.choices[0].message.content;
 }
+
+module.exports.chat = chat

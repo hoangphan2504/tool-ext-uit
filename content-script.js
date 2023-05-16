@@ -1,7 +1,7 @@
 //const { log } = require("console");
 //var {popup} = require("./popup.js");
 
-console.log("Content script is runnung", chrome);
+console.log("Content script is runnIng", chrome);
 const bodyDOM = document.querySelector("body");
 let selectionText = "";
 
@@ -50,13 +50,14 @@ function getSelectedTextNode() {
 function getRangeSelectionText() {
     const selectionTextNode = getSelectedTextNode();
     
-    const getRange = selectionTextNode.getRangeAt(0);   
+    const getRange = selectionTextNode.getRangeAt(0); 
+    const selectedElement = getRange.commonAncestorContainer.parentElement;  
     const selectionRect = getRange.getBoundingClientRect();
     
-    return selectionRect;
+    return [selectionRect, selectedElement];
 }
 
-function renderTool(selectionTextRange, selectionText, answer){
+function renderTool(selectionTextRange, selectedElement, selectionText, answer){
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-ext-uit';
     const tooltipIcon = document.createElement('div');
@@ -105,20 +106,69 @@ function renderTool(selectionTextRange, selectionText, answer){
 
     bodyDOM.appendChild(tooltipWrapper);
 
+    const loading = false;
     if(tooltipWrapper) {
     tooltipWrapper.addEventListener("click", async () => {
-        console.log("hihi", selectionText);
+        const loading = true;
+
+
+        console.log(selectionText);
         if(selectionText.length > 0){
-            
-            const result = await fetch(`http://localhost:3000/api/check?input=${selectionText}`);
-            const resultJson = await result.json();
-            renderResult(selectionTextRange, selectionText, resultJson.output);
+            try{
+                Loading(selectionTextRange, selectionText);
+                const result = await fetch(`http://localhost:3001/api/check?input=${selectionText}`);
+                const resultJson = await result.json();
+
+                //remove loading 
+                const loading = document.querySelector('div#loading-ext-uit')
+                loading.remove();
+
+                renderResult(selectionTextRange, selectionText, resultJson.output, selectedElement);
+                // addevent 
+                const newElement = document.createElement('div');
+                newElement.innerHTML = resultJson.output; 
+                selectedElement.parentNode.replaceChild(newElement, selectedElement);
+                //selectedElement.innerHTML = 
+            } 
+            catch(err){
+                console.log(err);
+            }
         }
     });
 }   
+}
+
+
+function Loading(selectionTextRange, selectionText){
+    const tooltipWrapper = document.createElement('div');
+    tooltipWrapper.id = 'loading-ext-uit';
+    const tooltipContainer = document.createElement('div');
+    tooltipContainer.classList.add("loading-ext-container");
+     tooltipContainer.innerHTML = `
+     <label for="">
+        <h1>Loading</h1>
+     </label>
+     `;
+
+    //tooltipContainer.innerHTML = popup(selectionText, answer);
+    tooltipWrapper.appendChild(tooltipContainer);
+
+    // determine top, left of tooltip
+    const top = selectionTextRange.top + selectionTextRange.height - 2 + 'px';
+    const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth/2) + 'px';
+
+    tooltipWrapper.style.position = 'absolute';
+    tooltipWrapper.style.background = 'white';
+    tooltipWrapper.style.cursor = 'pointer';
+    tooltipWrapper.style.padding = '4px';
+    tooltipWrapper.style.top = top;
+    tooltipWrapper.style.left = left;
+    bodyDOM.appendChild(tooltipWrapper);
 
 }
-function renderResult(selectionTextRange, selectionText, answer){
+
+
+function renderResult(selectionTextRange, selectionText, answer, selectedElement){
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-result-ext-uit';
     const tooltipContainer = document.createElement('div');
@@ -126,7 +176,7 @@ function renderResult(selectionTextRange, selectionText, answer){
      tooltipContainer.innerHTML = `
      <label for="">
         Input: 
-         <span>${selectionText}</span>
+         <span>${selectionText} ${selectedElement}</span>
     </label>
   
      <label for="">
@@ -151,6 +201,11 @@ function renderResult(selectionTextRange, selectionText, answer){
 
 
     bodyDOM.appendChild(tooltipWrapper);
+
+    // add event approve 
+    //approve.addEventListener("click",()=>{
+      //  selectedElement.innerHTML = resultJson.output;
+   //} )
 }
 
 
@@ -162,11 +217,11 @@ bodyDOM.addEventListener("mouseup", ()=>{
 
     selectionText= getSelectedText();
     if(selectionText.length >0) {  
-        const selectionTextRange = getRangeSelectionText();
+        const [selectionTextRange, selectedElement]= getRangeSelectionText();
 
         // console.log(selectionText);    
         // console.log(selectionTextRange);
-        renderTool(selectionTextRange, selectionText);
+        renderTool(selectionTextRange, selectedElement, selectionText);
 
         setTimeout(() => {
             const tooltipWrapper = document.querySelector('div#research-ext-uit'); 
