@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <head><link rel = "loading" type="text/css" href="loader.css"></head>
   <head>
     <title>Source and Output Box</title>
     <style>
+      
       body {
         background-image: url("img_back.jpg");
       }  
@@ -19,7 +19,7 @@
         padding: 20px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         background: rgb(22,1,29);
-background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+        background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
         flex-wrap: wrap;
         justify-content: space-between;
         border-radius: 5%;
@@ -65,7 +65,7 @@ background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
         padding: 10px;
         box-sizing:border-box;
     
-        background-color:rgb(217, 218, 215);
+        background-color: white;
         font-size: 19px;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         border-radius: 7%;
@@ -73,12 +73,12 @@ background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
      
       .box-header {
         position:sticky;
-        flex-basis:48% ;
+        
         /*background: rgb(2,0,36);
         background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(22,0,29,1) 35%, rgba(0,212,255,1) 100%);
         */
         color : white; 
-        font-family: 'Courier New', Courier, monospace;
+        
         font-size:x-large;
       }
       .output-container {
@@ -94,11 +94,26 @@ background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
         padding: 10px;
         box-sizing: border-box;
         resize: none;
-        background-color:rgb(217, 218, 215);
+        background-color: white;
         font-size: 19px;
         border-radius: 7%;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        
       }
+      .approve-button {
+      background-color: white;
+      color: rgb(22,1,29);
+        color: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+      padding: 5px 10px;
+      
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      position:absolute;
+      
+    }
     </style>
     
   </head>
@@ -107,7 +122,7 @@ background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
    
     <div class="box">
         <div class="box-header" >
-            <div class = "title"> UIT EXTENSION </div>
+            <div class = "title"> <span>UIT EXTENSION</span>  </div>
     </div>
         <div class="source">
         <h2>Source</h2>
@@ -123,6 +138,8 @@ background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
           
         </div> 
         <div><p id="output-textarea"></p></div>
+        <button class="approve-button">Approve</button>
+
       </div>
     </div>
    
