@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head><link rel = "loading" type="text/css" href="loader.css"></head>
+  <head>
+    <title>Source and Output Box</title>
+    <style>
+      body {
+        background-image: url("img_back.jpg");
+      }  
+      .box {
+        position:fixed;
+        width: 394px; 
+        height: 500px;
+        left: 40%;
+        top:15%;
+        max-width: 905px;
+        max-height: 951px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background: linear-gradient( rgba(22,1,29,1) 100% , rgba(1,10,80,1) 100% , rgba(249,56,161,1) 100%,rgba(247,5,126,1) 100%,rgba(214,165,253,1) 100%, rgba(217,217,217,1) 100%);
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-radius: 5%;
+        opacity: 0.9;
+       
+        visibility:initial;
+      }
+      
+      .source {
+        flex-basis: 25%;
+        padding: 10px;
+        color :azure;
+        font-family:cursive;
+        overflow: auto;
+      }
+
+      .output {
+        flex-basis: 48%;
+        padding: 10px;
+        color : azure;
+        overflow: auto;
+        font-family: cursive;
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+      }
+      
+      .button {
+        background: rgb(2,0,36);
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(22,0,29,1) 35%, rgba(0,212,255,1) 100%);
+        border: none;
+        color:darkgray;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius:25%;
+        font-display:unset;
+      }
+      
+      .input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        text-decoration:chocolate;
+        font-size: 100cm;
+        font-family: 'Courier New', Courier, monospace;
+       
+      }
+      
+      .input-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        box-sizing:border-box;
+    
+        background-color:rgb(217, 218, 215);
+        font-size: 19px;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        border-radius: 7%;
+      }
+     
+      .box-header {
+        position:sticky;
+        flex-basis:48% ;
+        /*background: rgb(2,0,36);
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(22,0,29,1) 35%, rgba(0,212,255,1) 100%);
+        */
+        color : white; 
+        font-family: 'Courier New', Courier, monospace;
+        font-size:x-large;
+      }
+      .output-container {
+        display: flex;
+        text-decoration: chocolate;
+        justify-content: center;
+        align-items: center;
+        min-height: 100px;
+      }
+      .output-textarea {
+         width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        box-sizing: border-box;
+        resize: none;
+        background-color:rgb(217, 218, 215);
+        font-size: 19px;
+        border-radius: 7%;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      }
+      
+      #preloader {  
+    background:  url(loader.gif) no-repeat center center;
+    position: fixed;
+    width: 100%;
+    background-size: 5%;
+    height :100vh;
+    z-index: 100;
+   }
+    </style>
+    
+  </head>
+
+  <body>
+   
+    <div class="box">
+        <div class="box-header" >
+            <div class = "title"> UIT EXTENSION </div>
+    </div>
+        <div class="source">
+        <h2>Source</h2>
+        <div class="input-container">
+          <div class="input-textarea"></div>
+         
+        </div>
+      </div>
+      <div class="output">
+        <h2>Output</h2>
+        <div class="output-container">
+            <div class="output-textarea" id ="output-textarea">  </div>
+          
+        </div>
+        <div><p id="output-textarea"></p></div>
+      </div>
+    </div>
+   
+    
+    </script>
+  </body>
+</html>
