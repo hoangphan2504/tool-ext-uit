@@ -13,9 +13,7 @@
     "content_scripts": [
     {
     "matches": ["https://www.overleaf.com/*"],
-    "js": ["content-script.js",
-    "background.js"
-  ]
+    "js": ["content-script.js"]
     }
     ],
     "permissions":[
