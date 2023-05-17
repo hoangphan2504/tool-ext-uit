@@ -4,13 +4,11 @@
     <title>Source and Output Box</title>
     <style>
       
-      body {
-        background-image: url("img_back.jpg");
-      }  
+        
       .box {
         position:fixed;
-        width: 394px; 
-        height: 500px;
+        width: 385px; 
+        height: 350px;
         left: 40%;
         top:15%;
         max-width: 905px;
@@ -18,8 +16,9 @@
         margin: 20px auto;
         padding: 20px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        background: rgb(22,1,29);
+        background: rgba(3, 1, 24, 1) 100%;
         background: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+        
         flex-wrap: wrap;
         justify-content: space-between;
         border-radius: 5%;
@@ -27,27 +26,32 @@
        
         visibility:initial;
       }
-      
       .source {
         flex-basis: 25%;
         padding: 10px;
         color :azure;
         font-family:cursive;
         overflow: auto;
+        display: none;
       }
-
+      
       .output {
-        flex-basis: 48%;
         padding: 10px;
-        color : azure;
+        color : white;
         overflow: auto;
         font-family: cursive;
         box-sizing: border-box;
-        width: 100%;
+       
         min-height: 100px;
         padding: 10px;
+        margin-top: -20px;
       }
-      
+      .output h2 span{
+        
+
+        color : white;
+        
+      }
      
       
       .input-container {
@@ -69,6 +73,7 @@
         font-size: 19px;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         border-radius: 7%;
+        display: none;
       }
      
       .box-header {
@@ -82,23 +87,28 @@
         font-size:x-large;
       }
       .output-container {
-        display: flex;
+        display: fixed;
         text-decoration: chocolate;
         justify-content: center;
         align-items: center;
         min-height: 100px;
+        margin-top: -20px;
+        width: 100%;
+        
       }
       .output-textarea {
          width: 100%;
-        min-height: 100px;
+        height: 130px;
         padding: 10px;
         box-sizing: border-box;
         resize: none;
-        background-color: grey;
+        background: rgb(0,0,0);
+        background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
         font-size: 19px;
-        border-radius: 7%;
+        margin-top: 50px;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        
+        overflow-y: auto;
+        color: black;
       }
       .approve-button {
       background-color: white;
@@ -111,8 +121,8 @@
       cursor: pointer;
       font-size: 16px;
       margin-top: 10px;
-      position:absolute;
-      
+      position:fixed;
+      margin-top: 25px;
     }
     </style>
     
@@ -122,7 +132,7 @@
    
     <div class="box">
         <div class="box-header" >
-            <div class = "title"> <span>UIT EXTENSION</span>  </div>
+            <div class = "title"> <span>PAPER PROOFING</span>  </div>
     </div>
         <div class="source">
         <h2>Source</h2>
@@ -132,7 +142,8 @@
         </div>
       </div>
       <div class="output">
-        <h2>Output</h2>
+        
+        <h2> <span>Suggestions</span></h2>
         <div class="output-container">
             <div class="output-textarea" id ="output-textarea"></div>
           

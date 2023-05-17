@@ -1,6 +1,6 @@
 const cors = require('cors');   
 const express = require('express');
-const bott = require('./chatbot.js');
+
 const { Configuration, OpenAIApi } = require("openai");
 const fs = require("fs");
 require('dotenv').config();

@@ -94,7 +94,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, answer){
 
     // determine top, left of tooltip
     const top = selectionTextRange.top + selectionTextRange.height + 1 + 'px';
-    const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth/2) + 'px';
+    const left = selectionTextRange.left + (selectionTextRange.width / 2)  -  (tooltipWrapper.offsetWidth/2) + 'px';
 
     tooltipWrapper.style.position = 'absolute';
     tooltipWrapper.style.background = 'white';
@@ -116,7 +116,9 @@ function renderTool(selectionTextRange, selectedElement, selectionText, answer){
         if(selectionText.length > 0){
             try{
                 Loading(selectionTextRange, selectionText);
+                //const result = await fetch(`https://mmlab.uit.edu.vn/check-paper/api/check?input=${selectionText}`);
                 const result = await fetch(`http://localhost:3001/api/check?input=${selectionText}`);
+                
                 const resultJson = await result.json();
 
                 //remove loading 
@@ -159,12 +161,6 @@ async function Loading(selectionTextRange, selectionText) {
     const top = selectionTextRange.top + selectionTextRange.height - 2 + 'px';
     const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth / 2) + 'px';
   
-    tooltipWrapper.style.position = 'absolute';
-    tooltipWrapper.style.background = 'white';
-    tooltipWrapper.style.cursor = 'pointer';
-    tooltipWrapper.style.padding = '4px';
-    tooltipWrapper.style.top = top;
-    tooltipWrapper.style.left = left;
     bodyDOM.appendChild(tooltipWrapper);
   }
   
@@ -185,10 +181,8 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
         tooltipContainer.innerHTML = html;
   
         // Update the content of the HTML template
-        const inputTextarea = tooltipContainer.querySelector('.input-textarea');
         const outputTextarea = tooltipContainer.querySelector('.output-textarea');
   
-        inputTextarea.textContent = selectionText;
         outputTextarea.textContent = answer;
   
         // Append the content to the tooltip container
@@ -198,10 +192,7 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
         const top = selectionTextRange.top + selectionTextRange.height - 2 + 'px';
         const left = selectionTextRange.left + (selectionTextRange.width / 2) - (tooltipWrapper.offsetWidth / 2) + 'px';
   
-        tooltipWrapper.style.position = 'absolute';
-        tooltipWrapper.style.background = 'white';
-        tooltipWrapper.style.cursor = 'pointer';
-        tooltipWrapper.style.padding = '4px';
+        
         tooltipWrapper.style.top = top;
         tooltipWrapper.style.left = left;
   

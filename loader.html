@@ -5,7 +5,7 @@
   <style>
       .box {
         position:absolute;
-        width: 200px; 
+        width: 225px; 
         height: 13px;
         top:45%;
         left:45%;
@@ -22,16 +22,19 @@
         opacity: 0.9;
        z-index: 1000;
       }
-    .text {
-        text-align:right ;
-        font-size: 18px;
-        color: white;
-        overflow: hidden;
-        font-family: cursive; 
-        position: sticky;
-        white-space: nowrap;
-        margin: -3%;
-    }
+      .text {
+  text-align: center; /* Center the text horizontally */
+  font-size: 18px;
+  color: white;
+  overflow: hidden;
+  font-family: cursive;
+  white-space: nowrap;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%); /* Center the text vertically */
+}
     .loader {
   position:absolute;
   top: 50%;
@@ -75,7 +78,7 @@
 <body>
   <div class="box">
     <div class = "text">
-         <span> UIT EXTENSION  </span>  
+         <span> PAPER PROOFING </span>  
         </div>
           <div class ="loader">
         </div>       
