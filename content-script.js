@@ -185,7 +185,6 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
         tooltipContainer.innerHTML = html;
   
         // Update the content of the HTML template
-        const inputTextarea = tooltipContainer.querySelector('.input-textarea');
         const outputTextarea = tooltipContainer.querySelector('.output-textarea');
   
         inputTextarea.textContent = selectionText;
