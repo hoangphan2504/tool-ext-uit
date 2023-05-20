@@ -81,8 +81,7 @@
         background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(22,0,29,1) 35%, rgba(0,212,255,1) 100%);
         */
         color : white; 
-        
-        font-size: 24px;
+        font-size: 22px;
       }
       .output-container {
         display: fixed;
@@ -107,7 +106,27 @@
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         overflow-y: auto;
         color: black;
+       border-radius: 9px;
+        
       }
+      .output-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.output-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.output-textarea::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 8px;
+  border: 6px solid transparent;
+ 
+}
+
+.output-textarea::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
       .approve-button {
       background-color: white;
       color: rgb(22,1,29);
@@ -128,7 +147,7 @@
 
   <body>
    
-    <div class="box" id ="box">
+    <div class="box">
         <div class="box-header" >
             <div class = "title"> <span>PAPER PROOFING</span>  </div>
     </div>
@@ -151,7 +170,5 @@
 
       </div>
     </div>
-   
-    
   </body>
 </html>
