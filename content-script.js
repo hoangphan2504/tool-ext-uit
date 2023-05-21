@@ -1,6 +1,3 @@
-//const { log } = require("console");
-//var {popup} = require("./popup.js");
-
 console.log("Content script is runnIng", chrome);
 const bodyDOM = document.querySelector("body");
 let selectionText = "";
@@ -49,15 +46,15 @@ function getSelectedTextNode() {
 
 function getRangeSelectionText() {
     const selectionTextNode = getSelectedTextNode();
-    
     const getRange = selectionTextNode.getRangeAt(0); 
+    
     const selectedElement = getRange.commonAncestorContainer.parentElement;  
     const selectionRect = getRange.getBoundingClientRect();
     
-    return [selectionRect, selectedElement];
+    return [selectionTextNode,selectionRect, selectedElement, getRange];
 }
 
-function renderTool(selectionTextRange, selectedElement, selectionText, answer){
+function renderTool(selectionTextRange, selectedElement, selectionText, getRange, selectionTextNode){
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-ext-uit';
     const tooltipIcon = document.createElement('div');
@@ -110,27 +107,26 @@ function renderTool(selectionTextRange, selectedElement, selectionText, answer){
     if(tooltipWrapper) {
     tooltipWrapper.addEventListener("click", async () => {
         const loading = true;
-
-
         console.log(selectionText);
         if(selectionText.length > 0){
             try{
                 Loading(selectionTextRange, selectionText);
-                //const result = await fetch(`https://mmlab.uit.edu.vn/check-paper/api/check?input=${selectionText}`);
-                const result = await fetch(`http://localhost:3001/api/check?input=${selectionText}`);
-                
-                const resultJson = await result.json();
+               // // Define the base URL based on the mode
+               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
 
+               // // Construct the complete URL
+               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
+
+               // // Make the fetch request
+               const result = await fetch(url);
+
+
+                const resultJson = await result.json();
+  
                 //remove loading 
                 const loading = document.querySelector('div#loading-ext-uit')
                 loading.remove();
-
-                renderResult(selectionTextRange, selectionText, resultJson.output, selectedElement);
-                // addevent 
-                // const newElement = document.createElement('div');
-                // newElement.innerHTML = resultJson.output; 
-                // selectedElement.parentNode.replaceChild(newElement, selectedElement);
-                //selectedElement.innerHTML = 
+                renderResult(selectionTextRange, selectionText, resultJson.output, selectedElement, getRange, selectionTextNode);
             } 
             catch(err){
                 console.log(err);
@@ -166,7 +162,7 @@ async function Loading(selectionTextRange, selectionText) {
   
 
 
-function renderResult(selectionTextRange, selectionText, answer, selectedElement) {
+function renderResult(selectionTextRange, selectionText, answer, selectedElement, getRange, selectionTextNode) {
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-result-ext-uit';
     const tooltipContainer = document.createElement('div');
@@ -183,7 +179,7 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
         // Update the content of the HTML template
         const outputTextarea = tooltipContainer.querySelector('.output-textarea');
   
-        outputTextarea.textContent = answer;
+        outputTextarea.textContent = answer; //output suggestion
   
         // Append the content to the tooltip container
         tooltipWrapper.appendChild(tooltipContainer);
@@ -203,9 +199,17 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
   
         // Add event listener to the "Approve" button
         approveButton.addEventListener("click", () => {
-            const newElement = document.createElement('div');
-                newElement.innerHTML = answer; 
-                selectedElement.parentNode.replaceChild(newElement, selectedElement);
+            try{
+                if (selectionTextNode.rangeCount) {
+                getRange.deleteContents();
+                getRange.insertNode(document.createTextNode(answer));
+                }
+                tooltipWrapper.remove();
+            }
+            catch (error) {
+                console.error(error);
+               
+            }
         });
       })
       .catch(error => {
@@ -230,11 +234,23 @@ function hideOnClickOutside(element) {
 
     document.addEventListener('click', outsideClickListener);
 }
-
 const isVisible = elem => !!elem && !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
 
 
-bodyDOM.addEventListener("mouseup", ()=>{
+bodyDOM.addEventListener("mouseup", () => {
+    
+    showExtensionIcon();
+});
+
+bodyDOM.addEventListener("keyup", (event) => {
+    if (event.shiftKey && event.key.includes("Arrow")) {
+        showExtensionIcon();
+    }
+});
+
+
+let tooltipWrapper;
+function showExtensionIcon() {
     const tooltipResult = document.querySelector('div#research-result-ext-uit')
     if(tooltipResult) hideOnClickOutside(tooltipResult)
     //tooltipResult.remove();
@@ -242,19 +258,19 @@ bodyDOM.addEventListener("mouseup", ()=>{
 
     selectionText= getSelectedText();
     if(selectionText.length >0) {  
-        const [selectionTextRange, selectedElement]= getRangeSelectionText();
+        const [selectionTextNode, selectionTextRange, selectedElement, getRange]= getRangeSelectionText();
 
-        // console.log(selectionText);    
-        // console.log(selectionTextRange);
-        renderTool(selectionTextRange, selectedElement, selectionText);
-
+        if(tooltipWrapper) tooltipWrapper.remove();
+        renderTool(selectionTextRange, selectedElement, selectionText, getRange, selectionTextNode); // hiển thị icon extension cho user click
+        tooltipWrapper = document.querySelector('div#research-ext-uit'); // Update the tooltipWrapper variable with the new tooltip
         setTimeout(() => {
             const tooltipWrapper = document.querySelector('div#research-ext-uit'); 
 
             if(tooltipWrapper) tooltipWrapper.remove();
         }, 3000)
     }
-})
+}
+    
 
 
 // lang nghe khi nguoi dung click vao icon translator 
