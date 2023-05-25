@@ -32,7 +32,7 @@ app.get("/api/check", async (req, res) => {
           messages: [
               {
                 role: "user",
-                content: `Can you please provide me with the corrected ${input} only, without any additional feedback?${input}`
+                content: `Please check the grammar of the following sentence while retaining the LaTeX syntax: "${input}", and provided the corrected only, without any additional feedback?`
               },
             ],
           });
