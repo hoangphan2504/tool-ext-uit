@@ -113,16 +113,17 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                 Loading(selectionTextRange, selectionText);
                // // Define the base URL based on the mode
                const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-
+               //const baseUrl = 'http://localhost:3001/api/check';
                // // Construct the complete URL
                const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
                // // Make the fetch request
                const result = await fetch(url);
 
-
+                //
                 const resultJson = await result.json();
-  
+                const {correctedGrammar, paraphrase} = resultJson.output;
+                console.log(correctedGrammar, " ", paraphrase);
                 //remove loading 
                 const loading = document.querySelector('div#loading-ext-uit')
                 loading.remove();
@@ -176,11 +177,67 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
       .then(html => {
         tooltipContainer.innerHTML = html;
   
+        console.log(2, tooltipContainer);
+
+        const suggestionTab = tooltipContainer.querySelector('#suggestion-tab');
+        const paraphraseTab = tooltipContainer.querySelector('#paraphrase-tab');
+        suggestionTab.style.fontWeight = 'bold';
+        paraphraseTab.style.fontWeight = 'normal';
+
+        const outputContainer = tooltipContainer.querySelector('.output-textarea');
+        if(answer.correctedGrammar == selectionText) {
+            let grammar =  "Congratulation, no error. Let's check the paraphrase version.";
+            outputContainer.textContent = grammar;
+        }
+        else 
+        {
+            grammar = answer.correctedGrammar;
+            outputContainer.textContent = grammar;
+        }
+        // Add event listeners to the tabs
+        suggestionTab.addEventListener('click', showSuggestion);
+
+        
+        paraphraseTab.addEventListener('click', showParaphrase);
+
+        // Function to show the Suggestion tab content
+        function showSuggestion() {
+        // Remove the active-tab class from the paraphraseTab
+        paraphraseTab.classList.remove('active-tab');
+        
+        // Add the active-tab class to the suggestionTab
+        suggestionTab.classList.add('active-tab');
+        
+        suggestionTab.style.fontWeight = 'bold';
+        paraphraseTab.style.fontWeight = 'normal';
+      
+          
+    
+        // Update the output content with the suggestion content
+        outputContainer.textContent = grammar;
+        }
+
+        // Function to show the Paraphrase tab content
+        function showParaphrase() {
+        // Remove the active-tab class from the suggestionTab
+        suggestionTab.classList.remove('active-tab');
+        
+        // Add the active-tab class to the paraphraseTab
+        paraphraseTab.classList.add('active-tab');
+        paraphraseTab.style.fontWeight = 'bold';
+        suggestionTab.style.fontWeight = 'normal';
+        // Update the output content with the paraphrase content
+        outputContainer.textContent = answer.paraphrase;
+        }
+
+
         // Update the content of the HTML template
-        const outputTextarea = tooltipContainer.querySelector('.output-textarea');
+
+        //const outputTextarea = tooltipContainer.querySelector('.output-textarea');
   
-        outputTextarea.textContent = answer; //output suggestion
-  
+        //outputTextarea.textContent = answer; //output suggestion
+        
+
         // Append the content to the tooltip container
         tooltipWrapper.appendChild(tooltipContainer);
   
@@ -193,16 +250,20 @@ function renderResult(selectionTextRange, selectionText, answer, selectedElement
         tooltipWrapper.style.left = left;
   
         bodyDOM.appendChild(tooltipWrapper);
-  
+        
         // Get the "Approve" button element
         const approveButton = tooltipContainer.querySelector('#approve-button');
   
         // Add event listener to the "Approve" button
         approveButton.addEventListener("click", () => {
+            const isSuggestionTabActive = suggestionTab.classList.contains("active-tab");
+            const outputContent = isSuggestionTabActive ? answer.correctedGrammar : answer.paraphrase;
+  
+            let op = outputContent;
             try{
                 if (selectionTextNode.rangeCount) {
                 getRange.deleteContents();
-                getRange.insertNode(document.createTextNode(answer));
+                getRange.insertNode(document.createTextNode(op));
                 }
                 tooltipWrapper.remove();
             }
@@ -273,4 +334,4 @@ function showExtensionIcon() {
     
 
 
-// lang nghe khi nguoi dung click vao icon translator 
+
