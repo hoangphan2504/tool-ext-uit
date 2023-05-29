@@ -38,12 +38,31 @@ app.get("/api/check", async (req, res) => {
           messages: [
               {
                 role: "user",
-                content: `Please check the grammar of the following sentence while retaining the LaTeX syntax: "${input}", and provided the corrected only, without any additional feedback?`
+                content: `Please check the grammar of the following sentence while retaining the LaTeX syntax: ${input}. Then provide the corrected only, without any additional feedback and additional latex code?`
               },
+              
             ],
           });
-          console.log(response.data.choices[0].message.content);
-          Result = response.data.choices[0].message.content; // JSON.parse(...)
+          
+          const correctedGrammar = response.data.choices[0].message.content;
+
+          // paraphrase
+
+          const continuedResponse = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+            // Include previous conversation messages
+              { role: "user", 
+              content: `Provide a paraphrased version and retain the latex syntax (if it has), without any additional feedback :${correctedGrammar}` },
+            ]
+          });
+
+          const paraphrase = continuedResponse.data.choices[0].message.content;
+          console.log("paraphrase",paraphrase);
+
+          Result = {correctedGrammar, paraphrase};
+          // Result = paraphrase;
+
           res.status(200).json({output: Result});
 
     }
