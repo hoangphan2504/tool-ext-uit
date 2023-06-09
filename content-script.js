@@ -112,8 +112,8 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
             try{
                 Loading(selectionTextRange, selectionText);
                // // Define the base URL based on the mode
-               //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-               const baseUrl = 'http://localhost:3001/api/check';
+               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+               //const baseUrl = 'http://localhost:3001/api/check';
                // // Construct the complete URL
                const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
