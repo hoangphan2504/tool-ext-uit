@@ -218,8 +218,7 @@ async function Loading(selectionTextRange, selectionText) {
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            const baseUrl = 'http://localhost:3001/api/para';
-
+            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
