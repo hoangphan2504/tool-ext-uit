@@ -1,34 +1,35 @@
 {
-    "manifest_version": 3,
-    "name": "UIT Paper Proofing Extension",
-    "version": "1.1.2",
-    "description": "UIT Paper Proofing Extension",
-    "icons": {
-      "16": "images/icon-16.png",
-      "32": "images/icon-32.png",
-      "48": "images/icon-48.png",
-      "128": "images/icon-128.png"
-    },
-  
-    "content_scripts": [
+  "manifest_version": 3,
+  "name": "UIT Paper Proofing Extension",
+  "version": "1.1.4",
+  "description": "UIT Paper Proofing Extension",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+
+  "content_scripts": [
+  {
+  "matches": ["https://www.overleaf.com/*",
+"file:///D:/UIT/HK4/UIT%20extension/Paper%20proofing%20UIT/popup-content.html"],
+  "js": ["content-script.js"]
+  }
+  ],
+  "web_accessible_resources": [
     {
-    "matches": ["https://www.overleaf.com/*"],
-    "js": ["content-script.js"]
+      "resources": [
+        "popup-content.html", "loader.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
-    ],
-    "permissions":[
-      "identity"
-    ],
-    "web_accessible_resources": [
-      {
-        "resources": [
-          "popup-content.html", "loader.html"
-        ],
-        "matches": [
-          "<all_urls>"
-        ]
-      }
-    ]
+  ],
+  "action": {
+    "default_popup": "popup-content.html"
+  }
 }
-  
+
 
