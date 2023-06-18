@@ -3,8 +3,7 @@
   <head>
     <title>Source and Output Box</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
     <style>
       
         
@@ -12,7 +11,7 @@
         position:fixed;
         width: 385px; 
         height: 350px;
-        left: 40%;
+        left: 60%;
         top:15%;
         max-width: 905px;
         max-height: 951px;
@@ -153,7 +152,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       .approve-button {
       background-color: white;
       color: rgb(22,1,29);
-        color: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+      color: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
       padding: 2px 10px;
       font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       border: none;
@@ -162,8 +161,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       font-size: 16px;
       margin-top: 5px;
       position:fixed;
-      margin-left: 220px;
-      
+      margin-left: 212px;
+      width: 113px;
     }
     .copy-button {
       background-color: white;
@@ -177,8 +176,9 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       font-size: 16px;
       margin-top: 5px;
       position:fixed;
-      margin-left: 130px;
-      
+      margin-left: 100px;
+      overflow-wrap: break-word;
+      width: 100px;
     }
     .copy-button i {
     
@@ -190,10 +190,10 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
 .close-button {
       position: absolute;
       top: 10px;
-      right: 10px;
+      right: 15px;
       cursor: pointer;
       color: white;
-      font-size: 18px;
+      font-size: 30px;
       transition: transform 0.2s ease-in-out;
     }
 
@@ -233,94 +233,11 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         </div> 
 
         <div><p id="output-textarea-2"></p></div>
-        <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i> Copy</button>
+        <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i>Copy</button>
         <button class="approve-button" id="approve-button"><i class="fa fa-check" aria-hidden="true"></i>Approve</button>
 
       </div>
-    
     </div>
-     <script>
-        
- document.addEventListener('DOMContentLoaded', function() {
-    var suggestionTab = document.querySelector('.output h2 span:first-child');
-    var paraphraseTab = document.querySelector('.output h2 span:last-child');
-    var outputTextarea = document.getElementById('output-textarea');
 
-    suggestionTab.addEventListener('click', function() {
-      suggestionTab.style.fontWeight = 'bold';
-      paraphraseTab.style.fontWeight = 'normal';
-      
-      // Add your code here for handling the Suggestion tab click
-    });
-
-    paraphraseTab.addEventListener('click', function() {
-      paraphraseTab.style.fontWeight = 'bold';
-      suggestionTab.style.fontWeight = 'normal';
-      
-      var suggestion = outputTextarea.textContent;
-      var paraphrase = 'Your paraphrase goes here'; // Replace with your paraphrase
-      
-      outputTextarea.textContent = paraphrase;
-    });
-
-    var approveButton = document.getElementById('approve-button');
-    approveButton.addEventListener('click', function() {
-      // Add your code here for handling the Approve button click
-    });
-  });
-        // Get the tab elements
-const suggestionTab = document.getElementById('suggestion-tab');
-const paraphraseTab = document.getElementById('paraphrase-tab');
-
-// Get the output container
-const outputContainer = document.querySelector('.output-textarea');
-
-// Add event listeners to the tabs
-suggestionTab.addEventListener('click', showSuggestion);
-paraphraseTab.addEventListener('click', showParaphrase);
-
-// Function to show the Suggestion tab content
-function showSuggestion() {
-  // Remove the active-tab class from the paraphraseTab
-  paraphraseTab.classList.remove('active-tab');
-  
-  // Add the active-tab class to the suggestionTab
-  suggestionTab.classList.add('active-tab');
-  
-  // Update the output content with the suggestion content
-  outputContainer.textContent = 'Suggestion content goes here';
-}
-
-// Function to show the Paraphrase tab content
-function showParaphrase() {
-  // Remove the active-tab class from the suggestionTab
-  suggestionTab.classList.remove('active-tab');
-  
-  // Add the active-tab class to the paraphraseTab
-  paraphraseTab.classList.add('active-tab');
-  
-  // Update the output content with the paraphrase content
-  outputContainer.textContent = 'Paraphrase content goes here';
-} 
-
-
-
-
-
-<!-- 
-    //   chrome.runtime.onMessage.addListener(function (message) {
-    //   if (message.action === "executePopupCode") {
-      //   $(document).ready(function() {
-      //   $('.paraphrase').click(function() {
-      //     var suggestion = $('#output-textarea').text(); // Get the current suggestion
-      //     var paraphrase = 'Your paraphrase goes here'; // Replace with your paraphrase
-  
-      //     $('#output-textarea').text(paraphrase); // Set the paraphrase as the new text
-      //     $('.paraphrase-link').hide(); // Hide the paraphrase link
-      //   });
-      // });
-    //}
-    // });
-    </script> 
   </body>
 </html>
