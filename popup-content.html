@@ -3,15 +3,16 @@
   <head>
     <title>Source and Output Box</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-
+    
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <style>
       
         
       .box {
         position:fixed;
-        width: 385px; 
+        width: 400px; 
         height: 350px;
-        left: 60%;
+        left: 40%;
         top:15%;
         max-width: 905px;
         max-height: 951px;
@@ -140,7 +141,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
  
 }
 
-#suggestion-tab,
+#suggestion-tab,#section-tab,
 #paraphrase-tab {
   cursor: pointer;
 }
@@ -151,8 +152,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
 }
       .approve-button {
       background-color: white;
-      color: rgb(22,1,29);
-      color: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+       
       padding: 2px 10px;
       font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       border: none;
@@ -161,13 +161,12 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       font-size: 16px;
       margin-top: 5px;
       position:fixed;
-      margin-left: 212px;
+      margin-left: 232px;
       width: 113px;
     }
     .copy-button {
       background-color: white;
-      color: rgb(22,1,29);
-        color: linear-gradient(90deg, rgba(22,1,29,1) 0%, rgba(107,5,147,1) 100%);
+
       padding: 2px 10px;
       font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       border: none;
@@ -176,12 +175,11 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       font-size: 16px;
       margin-top: 5px;
       position:fixed;
-      margin-left: 100px;
+      margin-left: 125px;
       overflow-wrap: break-word;
       width: 100px;
     }
     .copy-button i {
-    
   margin-right: 5px;
 }
 .approve-button i {
@@ -193,13 +191,75 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       right: 15px;
       cursor: pointer;
       color: white;
-      font-size: 30px;
+      font-size: 28px;
       transition: transform 0.2s ease-in-out;
     }
 
     .close-button:hover {
       transform: scale(1.2);
     }
+
+    .output h2 .dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .output h2.dropdown::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+ 
+
+    .output h2 .dropdown:hover .dropdown-content {
+      display: block;
+      color: white;
+    }
+    .output h2 .dropdown-content {
+        display: none;
+        position: absolute;
+        transition: (-50,-50);
+        border-radius: 5px;
+        padding: 5px 5px;
+        cursor: pointer;
+        color: white;
+        /* New CSS properties for vertical display */
+        top: 20%;
+        left: 210px;
+        background: rgb(0,0,0);
+        background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
+        width:120px ;
+        height: 50px;
+
+      overflow-y: auto;
+      }
+      .output h2 .dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.output h2 .dropdown-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.output h2 .dropdown-content::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 5px;
+  border: 5px solid transparent;
+ 
+}
+
+      .output h2 .dropdown-content a {
+        display: block;
+        color:black;
+        font-family: cursive;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 18px;
+      }
+    
+.output h2 .dropdown-content :hover {
+  background: rgb(0,0,0);
+background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.9346113445378151) 2%, rgba(37,228,187,1) 8%, rgba(57,249,212,1) 20%, rgba(39,241,196,1) 100%, rgba(2,0,24,1) 100%);  width: 100px;
+  width: 100%;
+}
 
     </style>
     
@@ -225,11 +285,31 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         
         <h2> 
           <span id="suggestion-tab" class="active-tab">Suggestion | </span>
-          <span id="paraphrase-tab" class="paraphrase-link"> Paraphrase</span>
+          <span id="paraphrase-tab" class="paraphrase-link"> Paraphrase |</span>
+          <span id="section-tab" class="active-tab"> Section <i class="fas fa-caret-down"></i>
+
+
+            <div class="dropdown-content">
+              <a href="#" onclick="showSectionInfo('Option 1')"> Title</a>
+              <a href="#" onclick="showSectionInfo('Option 2')"> Abstract</a>
+              <a href="#" onclick="showSectionInfo('Option 3')"> Introduction</a>
+              <a href="#" onclick="showSectionInfo('Option 4')">Related work</a>
+              <a href="#" onclick="showSectionInfo('Option 5')">Proposed method</a>
+              <a href="#" onclick="showSectionInfo('Option 6')">Experiments</a>
+              <a href="#" onclick="showSectionInfo('Option 7')">Conclusion</a>
+
+            </div>
+        
+       
+          </span>
+        
+        
         </h2>
         
         <div class="output-container">
-            <div class="output-textarea" id ="output-textarea-1"></div>
+            <div class="output-textarea" id ="output-textarea-1">
+              
+            </div>
         </div> 
 
         <div><p id="output-textarea-2"></p></div>
@@ -237,7 +317,82 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         <button class="approve-button" id="approve-button"><i class="fa fa-check" aria-hidden="true"></i>Approve</button>
 
       </div>
+      
     </div>
+    
+     <script>
+        
+ document.addEventListener('DOMContentLoaded', function() {
+    var suggestionTab = document.querySelector('.output h2 span:first-child');
+    var paraphraseTab = document.querySelector('.output h2 span:last-child');
 
+    var outputTextarea = document.getElementById('output-textarea');
+    function showSectionInfo(info) {
+  var sectionOutput = document.getElementById('section-output');
+  sectionOutput.value = 'Selected Section Info: ' + info;
+ 
+}
+
+
+// Function to handle the dropdown menu display
+function toggleDropdown() {
+  var dropdownContent = document.querySelector('.dropdown-content');
+  dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
+}
+
+// Add event listener to the section tab
+var sectionTab = document.getElementById('section-tab');
+sectionTab.addEventListener('click', toggleDropdown);
+
+
+
+    sectionTab.addEventListener('click', function() {
+      suggestionTab.style.fontWeight = 'normal';
+      paraphraseTab.style.fontWeight = 'normal';
+      sectionTab.style.fontWeight = 'bold'
+      // Add your code here for handling the Suggestion tab click
+    });
+  
+
+    var approveButton = document.getElementById('approve-button');
+    approveButton.addEventListener('click', function() {
+      // Add your code here for handling the Approve button click
+    });
+  });
+        // Get the tab elements
+const suggestionTab = document.getElementById('suggestion-tab');
+const paraphraseTab = document.getElementById('paraphrase-tab');
+const sectionTab = document.getElementById('section-tab')
+// Get the output container
+const outputContainer = document.querySelector('.output-textarea');
+
+// Add event listeners to the tabs
+sectionTab.addEventListener('click', showSection);
+
+
+
+
+function showSectionInfo(info) {
+      var sectionOutput = document.getElementById('section-output');
+      sectionOutput.value = 'Selected Section Info: ' + info;
+    }
+
+
+
+<!-- 
+    //   chrome.runtime.onMessage.addListener(function (message) {
+    //   if (message.action === "executePopupCode") {
+      //   $(document).ready(function() {
+      //   $('.paraphrase').click(function() {
+      //     var suggestion = $('#output-textarea').text(); // Get the current suggestion
+      //     var paraphrase = 'Your paraphrase goes here'; // Replace with your paraphrase
+  
+      //     $('#output-textarea').text(paraphrase); // Set the paraphrase as the new text
+      //     $('.paraphrase-link').hide(); // Hide the paraphrase link
+      //   });
+      // });
+    //}
+    // });
+    </script> 
   </body>
 </html>
