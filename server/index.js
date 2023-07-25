@@ -45,17 +45,24 @@ app.get("/api/check", async (req, res) => {
           {
             role: "system",
             content:
-              "You are a rude assistant. You only give the answer, what they ask and what user wants you to response like user ask you to return 1 only the response only contain number 1, you won't give any friendly response or give any additional feedback.",
+              "You are a rude assistant. You only give the answer, what they ask and what user wants you to response. No polite in answer such as: 'the correct answer is...' or 'this is incorrect' ",
           },
           {
             role: "user",
-            content: `Please check the grammar of the following sentence while retaining the LaTeX syntax: ${input}. Then provide the corrected only, without any additional feedback and additional latex code? If there are no error, return 1 only, no more`,
+            content: `Please provide the correct grammar version of this latex code: '${input}'. The response would be without any feedback and additional latex code.`,
           },
+          // { role: "user", content: `Please check the grammar of the sentence: ${input} and provide the corrected version, retain the latex code of the input. No addiontal feedback` },
+          // { role: "assistant", content: "Sure, here's the corrected version:" }
+
         ],
       });
-
+      
       correctedGrammar = response.data.choices[0].message.content;
-      Result =  correctedGrammar;
+      if(input === correctedGrammar) console.log(1) ;
+      else console.log(0);
+      Result =  {correctedGrammar, input};
+      console.log(input);
+      console.log(Result);
 
         res.status(200).json({output: Result});
       
@@ -83,7 +90,7 @@ app.get("/api/para", async (req, res) => {
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Provide a paraphrased version and retain the latex syntax (if it has), without any additional feedback :${input}` },
+            content: `Provide a paraphrased version, without any additional feedback :${input}. Keep the format of the input` },
           ]
         });
 
