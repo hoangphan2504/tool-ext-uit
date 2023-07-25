@@ -112,29 +112,31 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
             try{
                 Loading(selectionTextRange, selectionText);
                // // Define the base URL based on the mode
-               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-               //const baseUrl = 'http://localhost:3001/api/check';
+               //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              const baseUrl = 'http://localhost:3001/api/check';
                // // Construct the complete URL
                const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
                // // Make the fetch request
                const result = await fetch(url);
-
                 //
                 const resultJson = await result.json();
-                const correctedGrammar = resultJson.output;
-                console.log(correctedGrammar);
+                const correctedGrammar = resultJson.output.correctedGrammar;
+                const input = resultJson.output.input;
+
+                console.log(10, input);
+                console.log(11,correctedGrammar);
                 //remove loading 
                 const loading = document.querySelector('div#loading-ext-uit')
                 loading.remove();
-                renderResult(selectionTextRange, selectionText, correctedGrammar, selectedElement, getRange, selectionTextNode);
+                renderResult(selectionTextRange, selectionText, correctedGrammar, input, selectedElement, getRange, selectionTextNode);
             } 
             catch(err){
                 console.log(err);
             }
         }
     });
-}   
+}     
 }
 
 async function Loading(selectionTextRange, selectionText) {
@@ -161,7 +163,7 @@ async function Loading(selectionTextRange, selectionText) {
   }
   
 
-  function renderResult(selectionTextRange, selectionText, answer, selectedElement, getRange, selectionTextNode) {
+  function renderResult(selectionTextRange, selectionText, answer, input, selectedElement, getRange, selectionTextNode) {
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-result-ext-uit';
     const tooltipContainer = document.createElement('div');
@@ -173,7 +175,7 @@ async function Loading(selectionTextRange, selectionText) {
     fetch(filePath)
       .then(response => response.text())
       .then(html => {
-        tooltipContainer.innerHTML = html;
+        tooltipContainer.innerHTML = html;  
   
         console.log(2, tooltipContainer);
   
@@ -185,8 +187,10 @@ async function Loading(selectionTextRange, selectionText) {
         const outputContainer = tooltipContainer.querySelector('.output-textarea');
   
         let grammar; // Declare grammar variable here
-  
-        if (answer == "1" || answer == "1.") {
+        console.log(14, answer.replace(/\r?\n|\r/g, " ") === input);
+        console.log(15, answer.replace(/\r?\n|\r/g, " "));
+        console.log(16, input);
+        if (answer.replace(/\r?\n|\r/g, " ") === input.replace(/\r?\n|\r/g, " ")) {
           grammar = "Congratulation, no error. Let's check the paraphrase version.";
           outputContainer.textContent = grammar;
         } else {
@@ -200,6 +204,9 @@ async function Loading(selectionTextRange, selectionText) {
   
         // Function to show the Suggestion tab content
         function showSuggestion() {
+          console.log("para", isCopied, " ", isCopiedPara);
+          let status = isCopiedGrammar; 
+          updateCopyButtonContent(status);
           // Remove the active-tab class from the paraphraseTab
           paraphraseTab.classList.remove('active-tab');
           // Add the active-tab class to the suggestionTab
@@ -218,7 +225,8 @@ async function Loading(selectionTextRange, selectionText) {
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/para';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -231,6 +239,9 @@ async function Loading(selectionTextRange, selectionText) {
 
         // Function to show the Paraphrase tab content
         function showParaphrase() {
+          let status =isCopiedPara;
+          updateCopyButtonContent(status);
+          console.log("para", isCopied, " ", isCopiedPara);
           outputContainer.textContent = parap;
           // Remove the active-tab class from the suggestionTab
           suggestionTab.classList.remove('active-tab');
@@ -294,12 +305,15 @@ async function Loading(selectionTextRange, selectionText) {
   
         // Get the "Approve" button element
         const approveButton = tooltipContainer.querySelector('#approve-button');
-  
+        let isCopiedGrammar = false;
+        let isCopiedPara = false;
+
         // Add event listener to the "Approve" button
         approveButton.addEventListener('click', () => {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
-          const outputContent = isSuggestionTabActive ? answer.correctedGrammar : answer.paraphrase;
-  
+          const outputContent = isSuggestionTabActive ? answer : parap;
+          
+          
           let op = outputContent;
           try {
             if (selectionTextNode.rangeCount) {
@@ -311,44 +325,123 @@ async function Loading(selectionTextRange, selectionText) {
             console.error(error);
           }
         });
-  
+        
+        let isCopied = false;
         const copyButton = tooltipContainer.querySelector('#copy-button');
         copyButton.addEventListener('click', () => {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
-          let text = isSuggestionTabActive ? answer.correctedGrammar : answer.paraphrase;
+          console.log("bấm click");
+          let text = isSuggestionTabActive ? answer : parap;
+          if(text === answer)
+          {
+            console.log("check");
+            isCopiedGrammar = true;
+            isCopiedPara = false;
+          }
+          else 
+          {
+            isCopiedPara = true;
+            isCopiedGrammar = false;
+          }
+
+          isCopied  = isSuggestionTabActive ? isCopiedGrammar : isCopiedPara;
           navigator.clipboard.writeText(text)
             .then(() => {
               console.log('Text copied to clipboard');
+              updateCopyButtonContent(isCopied);
             })
             .catch((error) => {
               console.error('Error copying text to clipboard:', error);
             });
         });
+
+        function updateCopyButtonContent(status) {
+          if (status) {
+            copyButton.innerHTML = '<i class="fas fa-copy"></i> Copied';
+          } else {
+            copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+          }
+        }
   
         // Enable/disable buttons based on initial conditions
         updateButtonState();
 
-        // drag mouse
-        let box = tooltipContainer.querySelector('.box');
-        //let boxBody = tooltipContainer.querySelector('.box-body');
+         // Find the close button element
+        const closeButton = tooltipContainer.querySelector('.close-button');
 
-        function onDrag({movementX , movementY}){
-            let getStyle = window.getComputedStyle(box);
-            let leftValue = parseInt(getStyle.left);
-            let topValue = parseInt(getStyle.top);
+        // Find the research result element
+        const researchResult = document.querySelector('div#research-result-ext-uit');
 
-            box.style.left = `${leftValue + movementX}px`;
-            box.style.top = `${topValue + movementY}px`;
+        // Add click event listener to the close button
+        closeButton.addEventListener('click', function() {
+          // Remove the research result element
+          console.log("click");
+          if (researchResult) {
+            console.log(1);
+            researchResult.remove();
+          }
+        });
+
+        const sectionTab = tooltipContainer.querySelector('#section-tab');
+        
+        // Function to handle the dropdown menu display
+        function toggleDropdown() {
+          var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+          dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
         }
-        box.addEventListener('mousedown', ()=> {
-          box.style.cursor = 'all-scroll';
-          box.addEventListener('mousemove', onDrag);
-        })
 
-        box.addEventListener('mouseup', ()=> {
-          box.style.cursor = 'default';
-          box.removeEventListener('mousemove', onDrag);
-        })
+        sectionTab.addEventListener('click', toggleDropdown);
+
+        function handleOptionClick(event) {
+          event.preventDefault();
+          var selectedOption = event.target.getAttribute('data-section');
+          var titleOutput = tooltipContainer.querySelector('#output-textarea')
+          console.log(titleOutput);
+          switch (selectedOption) {
+              case 'Option 1':
+                  titleOutput.style.display = 'block';
+                  break;;
+              case 'Option 2':
+                  outputContainer.textContent = 'ig';
+                  break;
+              case 'Option 3':
+                  outputContainer.textContent = 'twitter';
+                  break;
+              // Add cases for other options if needed
+              default:
+                  outputContainer.textContent = '';
+          }
+
+          // Hide the dropdown after selecting an option
+          toggleDropdown();
+      }
+
+        var dropdownLinks = tooltipContainer.querySelectorAll('.dropdown-content a');
+            dropdownLinks.forEach(function(link) {
+            link.addEventListener('click', handleOptionClick);
+        });
+      
+        // // drag mouse
+        // let box = tooltipContainer.querySelector('.box');
+        // //let boxBody = tooltipContainer.querySelector('.box-body');
+
+        // function onDrag({movementX , movementY}){
+        //     let getStyle = window.getComputedStyle(box);
+        //     let leftValue = parseInt(getStyle.left);
+        //     let topValue = parseInt(getStyle.top);
+
+        //     box.style.left = `${leftValue + movementX}px`;
+        //     box.style.top = `${topValue + movementY}px`;
+        // }
+        // box.addEventListener('mousedown', ()=> {
+        //   box.style.cursor = 'all-scroll';
+        //   box.addEventListener('mousemove', onDrag);
+        // })
+
+        // box.addEventListener('mouseup', ()=> {
+        //   box.style.cursor = 'default';
+        //   box.removeEventListener('mousemove', onDrag);
+        // })
 
       })
       .catch(error => {
@@ -361,21 +454,21 @@ async function Loading(selectionTextRange, selectionText) {
   
 
 
-function hideOnClickOutside(element) {
-    const outsideClickListener = event => {
-        if (!element.contains(event.target) && isVisible(element)) { // or use: event.target.closest(selector) === null
-          element.remove();
-          removeClickListener();
-        }
-    }
+// function hideOnClickOutside(element) {
+//     const outsideClickListener = event => {
+//         if (!element.contains(event.target) && isVisible(element)) { // or use: event.target.closest(selector) === null
+//           element.remove();
+//           removeClickListener();
+//         }
+//     }
 
-    const removeClickListener = () => {
-        document.removeEventListener('click', outsideClickListener);
-    }
+//     const removeClickListener = () => {
+//         document.removeEventListener('click', outsideClickListener);
+//     }
 
-    document.addEventListener('click', outsideClickListener);
-}
-const isVisible = elem => !!elem && !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
+//     document.addEventListener('click', outsideClickListener);
+// }
+// const isVisible = elem => !!elem && !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
 
 
 bodyDOM.addEventListener("mouseup", () => {
@@ -384,17 +477,20 @@ bodyDOM.addEventListener("mouseup", () => {
 });
 
 bodyDOM.addEventListener("keyup", (event) => {
+  
     if (event.shiftKey && event.key.includes("Arrow")) {
         showExtensionIcon();
     }
 });
 
 
+
 let tooltipWrapper;
 function showExtensionIcon() {
     const tooltipResult = document.querySelector('div#research-result-ext-uit')
-    if(tooltipResult) hideOnClickOutside(tooltipResult)
+    //if(tooltipResult) hideOnClickOutside(tooltipResult)
     //tooltipResult.remove();
+  
 
 
     selectionText= getSelectedText();
