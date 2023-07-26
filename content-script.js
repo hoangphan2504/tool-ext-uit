@@ -392,6 +392,66 @@ async function Loading(selectionTextRange, selectionText) {
 
         sectionTab.addEventListener('click', toggleDropdown);
 
+        //TITLE function check
+        function containsDictionaryWord(input){
+          const dictionaryWords = ["combine", "research", "study", "using"];
+          let containsDictionaryWord = false;
+          dictionaryWords.forEach(word => {
+            if (input.includes(word)) {
+              containsDictionaryWord = true;
+            }
+          });
+          Used_common_word = tooltipContainer.querySelector('#Used-common-word');
+          if (containsDictionaryWord) {
+            console.log(1); // Return 1 if the text contains any of the dictionary words
+            Used_common_word.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
+
+          } else {
+            console.log(0); // Return 0 if the text does not contain any of the dictionary words
+            Used_common_word.innerHTML+= `<i class="fas fa-check" style="color: green;"></i>`;
+
+          }
+        }
+
+        function checkLengthTitile(input){
+          const match = input.match(/\{([^}]+)\}/);
+          if (match) {
+            const extractedText = match[1];
+            // Split the extracted text into words
+            const words = extractedText.split(/\s+/);
+            Name = tooltipContainer.querySelector('#Name');
+            console.log(Name);
+            if (words.length > 12) {  
+              Name.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
+              console.log("The text inside curly braces contains more than 12 words.");
+            } else {
+              Name.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
+              console.log("The text inside curly braces does not contain more than 12 words.");
+            }
+          } else {
+            console.log("No text inside curly braces found.");
+          }
+          
+        }
+
+        let abs1Fetched = false
+        async function fetchAbstract1() {
+          try {
+            const baseUrl = 'http://localhost:3001/api/para';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            // Make the fetch request
+            const result = await fetch(baseUrl);
+            const resultJson = await result.json();
+            abs1 = resultJson.output;
+            return abs1;
+          } catch (err) {
+            console.log(err);
+          }}
+
+        
+        
+        
+
         function handleOptionClick(event) {
           event.preventDefault();
           var selectedOption = event.target.getAttribute('data-section');
@@ -399,13 +459,104 @@ async function Loading(selectionTextRange, selectionText) {
           console.log(titleOutput);
           switch (selectedOption) {
               case 'Option 1':
-                  titleOutput.style.display = 'block';
-                  break;;
+                  outputContainer.innerHTML = 
+                  `<p class = "title-output" id = "title-output" > 
+                      <a id = "Used-common-word"> <i class = "fas fa-circle"> </i> Don't use : combine,research,study </a>
+                      <br>
+                      <a id = "Name"> <i class = "fas fa-circle"> </i> Titile name is less than 13 words</a>
+                  </p>`
+
+                  console.log(tooltipContainer.querySelector('#Used-common-word'));
+                  containsDictionaryWord(input);
+                  checkLengthTitile(input);
+                  break;
               case 'Option 2':
-                  outputContainer.textContent = 'ig';
+                  outputContainer.innerHTML =  
+                  `<p class = "abstract-output" id = "abstract-output" > 
+                      <a id = "unsolved-prob" > <i class = "fas fa-circle"> </i> Show current unsolved problem </a>
+                      <br>
+                      <a id = "solution"> <i class = "fas fa-circle"> </i> Solution for unsolved problem </a>
+                      <br>              
+                      <a id = "unsolved-prob" > <i class = "fas fa-circle"> </i> Show superior result </a>
+                  </p>`;
+                  if (!abs1Fetched) {
+                    // Fetch the paraphrase if it hasn't been fetched before
+                    fetchAbstract1()
+                      .then(abs1 => {
+                        // Update the output container with the paraphrase result
+                        outputContainer.textContent = abs1;
+                        // Set the flag to true indicating that the paraphrase has been fetched
+                        abs1Fetched = true;
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                }
                   break;
               case 'Option 3':
-                  outputContainer.textContent = 'twitter';
+                  outputContainer.innerHTML =
+                  `<p class = "intro-output" id = "intro-output" > 
+                  <a id = "superior-image" > <i class = "fas fa-circle"> </i> Teaser:Has image showing the superiority of new method over the old method </a>
+                   <br>
+                   <a id = "data-superior"> <i class = "fas fa-circle"> </i> Teaser:Has image showing the superiority of new dataset over the old dataset   </a>
+                   <br>         
+                   <a id = "caption" > <i class = "fas fa-circle"> </i>Teaser:Clearly caption, emphasize the superiority of this method </a>     
+                   <br>
+                   <a id = "problem-old-research" > <i class = "fas fa-circle"> </i> Having shown problem that previous researchs haven't been done  </a>               
+                   <br>
+                   <a id = "new-idea" > <i class = "fas fa-circle"> </i> Show idea to solve the problem </a>
+                   <br>
+                   <a id = "highly-general-idea" > <i class = "fas fa-circle"> </i> Solution for the problem is highly general (Don't use combine,using) </a>
+                   <br>
+                   <a id = "Emphasize-contribution" > <i class = "fas fa-circle"> </i>Entire paragraph should be devoted to emphasizing the main contribution </a>
+                   <br>
+                   <a id = "more-than-1-contribution" > <i class = "fas fa-circle"> </i>Should have bullet or roman number if it has more than one contribution </a>
+                 </p>`
+                  break;
+              case 'Option 4':
+                  outputContainer.innerHTML =`
+                  <p class = "Related-work" id = "Related-work" style= "display:none"> 
+                    <a id = "show-paper"> <i class = "fas fa-circle"> </i> Show at least 3 recent papers (2 years back) </a>
+                    <br>
+                  <a id = "pros-cons"  > <i class = "fas fa-circle"> </i> Show pros and cons for each method </a>
+                  </p>`
+                  break;
+              case 'Option 5':
+                  outputContainer.innerHTML = 
+                  `<p class = "proposed-output" id = "proposed-output" "> 
+                      <a id = "general-scheme"> <i class = "fas fa-circle"> </i> General scheme </a>
+                      <br>
+                      <a id = "caption"  > <i class = "fas fa-circle"> </i> Caption describe the main components of General Scheme </a>
+                      <br>              
+                      <a id = "formula"> <i class = "fas fa-circle"> </i> Explicit formula</a>
+                  </p>`;
+                  break;
+              case 'Option 6':
+                  outputContainer.innerHTML =`<p class = "Experiments" id = "Experiments" > 
+                  <a id = "Empirical-dataset"> <i class = "fas fa-circle"> </i> Describe empirical dataset: name,quantity,data properties </a>
+                   <br>
+                   <a id = "Empirical-protocol"  > <i class = "fas fa-circle"> </i>Describe empirical protocol: train/val/test, metrics  </a>
+                   <br>              
+                   <a id = "Hyperparameter"> <i class = "fas fa-circle"> </i>Describe hyperparameter : learning rate, train:valid, K fold, epoch, lambda</a>
+                   <br>
+                   <a id = "Data-table"> <i class = "fas fa-circle"> </i>Has a quantitative data table</a>
+                   <br>
+                   <a id = "Visual-chart"> <i class = "fas fa-circle"> </i>Has a visual chart of performance(ROC,MAP) </a>
+                   <br>
+                   <a id = "Picture"> <i class = "fas fa-circle"> </i>Pictures that illustrate good situations </a>
+                   <br>
+                   <a id = "Ablation-study"> <i class = "fas fa-circle"> </i>Ablatuon study to evaluate modules </a>
+    
+    
+                </p>`
+                  break;
+              case 'Option 7':
+                  outputContainer.innerHTML =`<p class = "Conclusion" id = "Conclusion" > 
+                  <a id = "paper-contribution"> <i class = "fas fa-circle"> </i> Show the contribution of this paper </a>
+                   <br>
+                   <a id = "future-work"  > <i class = "fas fa-circle"> </i> Show future work </a>
+                   
+                </p>`
                   break;
               // Add cases for other options if needed
               default:
@@ -414,7 +565,7 @@ async function Loading(selectionTextRange, selectionText) {
 
           // Hide the dropdown after selecting an option
           toggleDropdown();
-      }
+        }
 
         var dropdownLinks = tooltipContainer.querySelectorAll('.dropdown-content a');
             dropdownLinks.forEach(function(link) {
