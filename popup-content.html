@@ -118,7 +118,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         resize: none;
         background: rgb(0,0,0);
         background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
-        font-size: 19px;
+        font-size: 17px;
         margin-top: 50px;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         overflow-y: auto;
@@ -222,12 +222,12 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         cursor: pointer;
         color: white;
         /* New CSS properties for vertical display */
-        top: 20%;
-        left: 210px;
+        top: 25%;
+        left: 235px;
         background: rgb(0,0,0);
         background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
         width:120px ;
-        height: 50px;
+        height: 100px;
 
       overflow-y: auto;
       }
@@ -260,8 +260,42 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
 background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.9346113445378151) 2%, rgba(37,228,187,1) 8%, rgba(57,249,212,1) 20%, rgba(39,241,196,1) 100%, rgba(2,0,24,1) 100%);  width: 100px;
   width: 100%;
 }
+.fa-circle{
+  font-size: 8px;
+  color :black;
 
-    </style>
+}
+.abstract-output {
+  font-size: 18px;
+  margin-top: -3px;
+  padding-top: 5px;
+}
+.proposed-ouput {
+  font-size: 18px;
+  margin-top: -3px;
+  padding-top: 5px;
+}
+.abstract-output a {
+  font-family: cursive;
+  font-size: 18px;
+}
+.title-ouput {
+  font-size: 18px;
+  margin-top: -3px;
+  padding-top: 5px;
+}
+.title-output a {
+  font-family: cursive;
+  font-size: 18px;
+
+}
+.proposed-output a {
+  font-family: cursive;
+  font-size: 18px;
+
+}
+
+  </style>
     
   </head>
 
@@ -274,125 +308,34 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
         <div class="box-header" >
             <div class = "title"> <span>PAPER PROOFING</span>  </div>
     </div>
-        <div class="source">
-        <h2>Source</h2>
-        <div class="input-container">
-          <div class="input-textarea"></div>
-         
-        </div>
-      </div>
-      <div class="output">
-        
+      
+    <div class="output">
         <h2> 
           <span id="suggestion-tab" class="active-tab">Suggestion | </span>
           <span id="paraphrase-tab" class="paraphrase-link"> Paraphrase |</span>
           <span id="section-tab" class="active-tab"> Section <i class="fas fa-caret-down"></i>
-
-
-            <div class="dropdown-content">
-              <a href="#" onclick="showSectionInfo('Option 1')"> Title</a>
-              <a href="#" onclick="showSectionInfo('Option 2')"> Abstract</a>
-              <a href="#" onclick="showSectionInfo('Option 3')"> Introduction</a>
-              <a href="#" onclick="showSectionInfo('Option 4')">Related work</a>
-              <a href="#" onclick="showSectionInfo('Option 5')">Proposed method</a>
-              <a href="#" onclick="showSectionInfo('Option 6')">Experiments</a>
-              <a href="#" onclick="showSectionInfo('Option 7')">Conclusion</a>
-
+            <div id="dropdown-content" class="dropdown-content" >
+              <a href="#" data-section="Option 1">Title</a>
+              <a href="#" data-section="Option 2">Abstract</a>
+              <a href="#" data-section="Option 3">Introduction</a>
+              <a href="#" data-section="Option 4">Related work</a>
+              <a href="#" data-section="Option 5">Proposed method</a>
+              <a href="#" data-section="Option 6">Experiments</a>
+              <a href="#" data-section="Option 7">Conclusion</a>
             </div>
-        
-       
           </span>
-        
-        
         </h2>
         
         <div class="output-container">
-            <div class="output-textarea" id ="output-textarea-1">
-              
-            </div>
-        </div> 
+            <div class="output-textarea" id ="output-textarea">
+          </div>
+        </div>
+      </div> 
 
-        <div><p id="output-textarea-2"></p></div>
+        <!-- <div><p id="output-textarea"></p></div> -->
         <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i>Copy</button>
         <button class="approve-button" id="approve-button"><i class="fa fa-check" aria-hidden="true"></i>Approve</button>
 
       </div>
       
     </div>
-    
-     <script>
-        
- document.addEventListener('DOMContentLoaded', function() {
-    var suggestionTab = document.querySelector('.output h2 span:first-child');
-    var paraphraseTab = document.querySelector('.output h2 span:last-child');
-
-    var outputTextarea = document.getElementById('output-textarea');
-    function showSectionInfo(info) {
-  var sectionOutput = document.getElementById('section-output');
-  sectionOutput.value = 'Selected Section Info: ' + info;
- 
-}
-
-
-// Function to handle the dropdown menu display
-function toggleDropdown() {
-  var dropdownContent = document.querySelector('.dropdown-content');
-  dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
-}
-
-// Add event listener to the section tab
-var sectionTab = document.getElementById('section-tab');
-sectionTab.addEventListener('click', toggleDropdown);
-
-
-
-    sectionTab.addEventListener('click', function() {
-      suggestionTab.style.fontWeight = 'normal';
-      paraphraseTab.style.fontWeight = 'normal';
-      sectionTab.style.fontWeight = 'bold'
-      // Add your code here for handling the Suggestion tab click
-    });
-  
-
-    var approveButton = document.getElementById('approve-button');
-    approveButton.addEventListener('click', function() {
-      // Add your code here for handling the Approve button click
-    });
-  });
-        // Get the tab elements
-const suggestionTab = document.getElementById('suggestion-tab');
-const paraphraseTab = document.getElementById('paraphrase-tab');
-const sectionTab = document.getElementById('section-tab')
-// Get the output container
-const outputContainer = document.querySelector('.output-textarea');
-
-// Add event listeners to the tabs
-sectionTab.addEventListener('click', showSection);
-
-
-
-
-function showSectionInfo(info) {
-      var sectionOutput = document.getElementById('section-output');
-      sectionOutput.value = 'Selected Section Info: ' + info;
-    }
-
-
-
-<!-- 
-    //   chrome.runtime.onMessage.addListener(function (message) {
-    //   if (message.action === "executePopupCode") {
-      //   $(document).ready(function() {
-      //   $('.paraphrase').click(function() {
-      //     var suggestion = $('#output-textarea').text(); // Get the current suggestion
-      //     var paraphrase = 'Your paraphrase goes here'; // Replace with your paraphrase
-  
-      //     $('#output-textarea').text(paraphrase); // Set the paraphrase as the new text
-      //     $('.paraphrase-link').hide(); // Hide the paraphrase link
-      //   });
-      // });
-    //}
-    // });
-    </script> 
-  </body>
-</html>
