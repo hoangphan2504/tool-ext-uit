@@ -60,8 +60,10 @@ app.get("/api/check", async (req, res) => {
       correctedGrammar = response.data.choices[0].message.content;
       if(input === correctedGrammar) console.log(1) ;
       else console.log(0);
-      Result =  correctedGrammar;
+      Result =  {correctedGrammar, input};
+      console.log(input);
       console.log(Result);
+
         res.status(200).json({output: Result});
       
     } catch (error) {
@@ -88,7 +90,7 @@ app.get("/api/para", async (req, res) => {
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Provide a paraphrased version, without any additional feedback :${input}` },
+            content: `Provide a paraphrased version, without any additional feedback :${input}. Keep the format of the input` },
           ]
         });
 
@@ -104,6 +106,48 @@ app.get("/api/para", async (req, res) => {
   else console.log("chua truy cap duoc if tren");
 })
 
+app.get("/api/abstract1", async (req, res) => {
+  const input = paraInput;
+  console.log(input, "abstract_1");
+  let Result = "";
+  console.log("check check");
+  if(input != "") {
+        // paraphrase
+
+        const abstractv1 = await openai.createChatCompletion({
+          model: "gpt-3.5-turbo",
+          messages: [
+          // Include previous conversation messages
+            { role: "user", 
+            content: `Does this text show any solution to the problem in this latex code ? the latex code is: '${input}'` },
+          ]
+        });
+
+        const abstract1 = abstractv1.data.choices[0].message.content;
+        console.log("abstract1",abstract1.substring(0, 3));
+
+        let firstThreeLetters;
+
+        if (abstract1.startsWith('Yes')) {
+          firstThreeLetters = abstract1.substring(0, 3);
+        } else if (abstract1.startsWith('No')) {
+          firstThreeLetters = abstract1.substring(0, 2);
+        } else {
+          // Handle the case when the string does not start with 'Yes' or 'No'
+          console.log("The string doesn't start with 'Yes' or 'No'");
+        }
+
+        console.log(firstThreeLetters); // Output: 'Yes'
+
+
+        abstract1Result =  firstThreeLetters;
+        // Result = paraphrase;
+
+        res.status(200).json({output: abstract1Result});
+
+  }
+  else console.log("chua truy cap duoc if tren");
+})
 
   
 
