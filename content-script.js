@@ -112,8 +112,8 @@
               try{
                   Loading(selectionTextRange, selectionText);
                 // // Define the base URL based on the mode
-                //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-                const baseUrl = 'http://localhost:3001/api/check';
+                const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+                //const baseUrl = 'http://localhost:3001/api/check';
                 // // Construct the complete URL
                 const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
@@ -225,8 +225,8 @@
     // Function to fetch the paraphrase result
           async function fetchParaphrase() {
             try {
-              const baseUrl = 'http://localhost:3001/api/para';
-              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+              //const baseUrl = 'http://localhost:3001/api/para';
+              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
               // Make the fetch request
               const result = await fetch(baseUrl);
               const resultJson = await result.json();
@@ -404,11 +404,11 @@
             Used_common_word = tooltipContainer.querySelector('#Used-common-word');
             if (containsDictionaryWord) {
               console.log(1); // Return 1 if the text contains any of the dictionary words
-              Used_common_word.innerHTML = `<i class="fas fa-times" style="color: red;"></i>` + Used_common_word;
+              Used_common_word.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
 
             } else {
               console.log(0); // Return 0 if the text does not contain any of the dictionary words
-              Used_common_word.innerHTML= `<i class="fas fa-check" style="color: green;"></i>` + Used_common_word;
+              Used_common_word.innerHTML+= `<i class="fas fa-check" style="color: green;"></i>`;
 
             }
           }
@@ -437,8 +437,8 @@
           let abs1Fetched = false
           async function fetchAbstract1() {
             try {
-              const baseUrl = 'http://localhost:3001/api/abstract1';
-              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+              //const baseUrl = 'http://localhost:3001/api/abstract1';
+              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
               // Make the fetch request
               const result = await fetch(baseUrl);
               const resultJson = await result.json();
