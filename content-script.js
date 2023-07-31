@@ -117,7 +117,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
         console.log(selectionText);
         if(selectionText.length > 0){
             try{
-                Loading(selectionTextRange, selectionText);
+              Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
               //const baseUrl = 'http://localhost:3001/api/check';
@@ -399,12 +399,32 @@ async function Loading(selectionTextRange, selectionText) {
         const sectionTab = tooltipContainer.querySelector('#section-tab');
         
         // Function to handle the dropdown menu display
-        function toggleDropdown() {
-          var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
-          dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
-        }
+        
+      function toggleDropdown() {
+  var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+  dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
+}
 
-        sectionTab.addEventListener('click', toggleDropdown);
+// Function to handle the selection of options in the dropdown - when click on content, the dropdown disappear
+      function handleDropdownOptionSelect() {
+        // Hide the dropdown content when an option is selected
+        var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+        dropdownContent.style.display = 'none';
+      }
+
+      // Attach a click event listener to each dropdown option
+      var dropdownOptions = tooltipContainer.querySelectorAll('.dropdown-option');
+      dropdownOptions.forEach(function (option) {
+        option.addEventListener('click', handleDropdownOptionSelect);
+      });
+
+      var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+      dropdownContent.addEventListener('click', function (event) {
+        // Stop the event from propagating to the sectionTab element
+        event.stopPropagation();
+      });
+
+      sectionTab.addEventListener('click', toggleDropdown);
 
         //TITLE function check
         function containsDictionaryWord(input){
@@ -494,10 +514,18 @@ async function Loading(selectionTextRange, selectionText) {
           superior_image = tooltipContainer.querySelector('#Teaser');
           if (contains_keyword_list) {
             console.log(1); // Return 1 if the text contains any of the key_word_list 
-            superior_image.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
+            var icon = document.createElement("i");
+            icon.className = "fas fa-check";
+            icon.style.color = "green";
+           superior_image.insertBefore(icon, superior_image.firstChild);
+            
           } else {
             console.log(0); // Return 0 if the text does not contain any key_word_list
-            superior_image.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>` ;
+            var icon = document.createElement("i");
+            icon.className = "fas fa-times";
+            icon.style.color = "red";
+            superior_image.insertBefore(icon, superior_image.firstChild);
+            //superior_image.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>` ;
           }
         }
 
@@ -513,10 +541,18 @@ async function Loading(selectionTextRange, selectionText) {
           Used_common_word = tooltipContainer.querySelector('#highly-general-idea');
           if (containsDictionaryWord) {
             console.log(1); // Return 1 if the text contains any of the dictionary words
-            Used_common_word.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
+            var icon = document.createElement("i");
+            icon.className = "fas fa-times";
+            icon.style.color = "red";
+            Used_common_word.insertBefore(icon, Used_common_word.firstChild);
+            //Used_common_word.innerHTML += `<i class="fas fa-times" style="color: red;"></i>`;
           } else {
             console.log(0); // Return 0 if the text does not contain any of the dictionary words
-            Used_common_word.innerHTML+= `<i class="fas fa-check" style="color: green;"></i>`;
+            var icon = document.createElement("i");
+            icon.className = "fas fa-check";
+            icon.style.color = "green";
+           Used_common_word.insertBefore(icon, Used_common_word.firstChild);
+           // Used_common_word.innerHTML+= `<i class="fas fa-check" style="color: green;"></i>`;
 
           }
         }
@@ -547,27 +583,51 @@ async function Loading(selectionTextRange, selectionText) {
         general_scheme = tooltipContainer.querySelector('#general-scheme');
         caption = tooltipContainer.querySelector('#caption');
         formula = tooltipContainer.querySelector('#formula');
-
+        
         if (contains_general_scheme) {
           console.log(1); // Return 1 if the text contains any of the dictionary words
-          general_scheme.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
+          var icon = document.createElement("i");
+          icon.className = "fas fa-check";
+          icon.style.color = "green";
+          general_scheme.insertBefore(icon, general_scheme.firstChild);
+          //general_scheme.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
         } else {
           console.log(0); // Return 0 if the text does not contain any of the dictionary words
-          generalScheme_list.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+          var icon = document.createElement("i");
+            icon.className = "fas fa-times";
+            icon.style.color = "red";
+            general_scheme.insertBefore(icon, general_scheme.firstChild);
+          //generalScheme_list.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
         }
         if (checkCaption) {
           console.log(1); // Return 1 if the text contains any of the dictionary words
-          caption.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
+          var icon = document.createElement("i");
+          icon.className = "fas fa-check";
+            icon.style.color = "green";
+           caption.insertBefore(icon, caption.firstChild);
+          //caption.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
         } else {
           console.log(0); // Return 0 if the text does not contain any of the dictionary words
-          caption.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+          var icon = document.createElement("i");
+          icon.className = "fas fa-times";
+          icon.style.color = "red";
+          caption.insertBefore(icon, caption.firstChild);
+         // caption.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
         }
         if (checkEquation) {
           console.log(1); // Return 1 if the text contains any of the dictionary words
+          var icon = document.createElement("i");
+          icon.className = "fas fa-check";
+            icon.style.color = "green";
+           formula.insertBefore(icon, formula.firstChild);
           formula.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
         } else {
           console.log(0); // Return 0 if the text does not contain any of the dictionary words
-          formula.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+          var icon = document.createElement("i");
+          icon.className = "fas fa-times";
+          icon.style.color = "red";
+          formula.insertBefore(icon, formula.firstChild);
+          //formula.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
         }
       }
     // Check experiments :
@@ -585,12 +645,18 @@ async function Loading(selectionTextRange, selectionText) {
 
       if (keyword) {
         console.log(1); // Return 1 if the text contains any of the dictionary words
-        
-        general_properties.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
+        var icon = document.createElement("i");
+        icon.className = "fas fa-check";
+          icon.style.color = "green";
+         general_properties.insertBefore(icon, general_properties.firstChild);
+       // general_properties.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
       } else {
         console.log(0); // Return 0 if the text does not contain any of the dictionary words
-        
-        general_properties.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+        var icon = document.createElement("i");
+          icon.className = "fas fa-times";
+          icon.style.color = "red";
+          general_properties.insertBefore(icon, general_properties.firstChild);
+        //general_properties.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
 
       }
     }
@@ -651,9 +717,9 @@ async function Loading(selectionTextRange, selectionText) {
                 case 'Option 3':
                   outputContainer.innerHTML =
                   `<p class = "intro-output" id = "intro-output" > 
-                  <a id = "Teaser" > <i class = "fas fa-circle"> </i> Has Teaser </a>
+                  <a id = "Teaser" > Has Teaser </a>
                   <br>
-                  <a id = "highly-general-idea" > <i class = "fas fa-circle"> </i> Solution for the problem is highly general (Don't use combine,using) </a>
+                  <a id = "highly-general-idea" > Solution for the problem is highly general (Don't use combine,using) </a>
                   <br>
                   </p>`;
                 console.log(tooltipContainer.querySelector('#superior-image'));
@@ -664,32 +730,32 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 4':
                   outputContainer.innerHTML = 
                   `<p class = "Related-work" id = "Related-work" "> 
-                  <a id = "show-paper"> <i class = "fas fa-circle"> </i> Show at least 3 recent papers (2 years back) </a>
+                  <a id = "show-paper"> Show at least 3 recent papers (2 years back) </a>
                   <br>
-                  <a id = "pros-cons"  > <i class = "fas fa-circle"> </i> Show pros and cons for each method </a>
+                  <a id = "pros-cons"  > Show pros and cons for each method </a>
                 </p>`;
                 break;
                 case 'Option 5':
                   outputContainer.innerHTML = 
                   `<p class = "proposed-output" id = "proposed-output"  "> 
-                  <a id = "general-scheme"> <i class = "fas fa-circle"> </i> General scheme </a>
+                  <a id = "general-scheme"> General scheme </a>
                   <br>
-                  <a id = "caption"  > <i class = "fas fa-circle"> </i> Caption describe the main components of General Scheme </a>
+                  <a id = "caption"  > Caption describe the main components of General Scheme </a>
                   <br>              
-                  <a id = "formula"> <i class = "fas fa-circle"> </i> Explicit formula</a>
+                  <a id = "formula"> Explicit formula</a>
                 </p>`;
                 checkProposedMethod(input);
                 break;
               case 'Option 6':
                 outputContainer.innerHTML = 
                 `<p class = "Experiments" id = "Experiments" > 
-                <a id = "Empirical-dataset"> <i class = "fas fa-circle"> </i> Describe empirical dataset: name,quantity,data properties </a>
+                <a id = "Empirical-dataset">Describe empirical dataset: name,quantity,data properties </a>
                   <br>
-                  <a id = "Empirical-protocol"  > <i class = "fas fa-circle"> </i>Describe empirical protocol: train/val/test, metrics  </a>
+                  <a id = "Empirical-protocol"  >Describe empirical protocol: train/val/test, metrics  </a>
                   <br>              
-                  <a id = "Hyperparameter"> <i class = "fas fa-circle"> </i>Describe hyperparameter : learning rate, train:valid, K fold, epoch, lambda</a>
+                  <a id = "Hyperparameter">Describe hyperparameter : learning rate, train:valid, K fold, epoch, lambda</a>
                   <br>
-                  <a id = "General-properties"> <i class = "fas fa-circle"> </i>Quantitative Analysis and Visualizations</a>
+                  <a id = "General-properties"> Quantitative Analysis and Visualizations</a>
                   <br>
               </p>`;
               checkExperiment(input);
@@ -697,9 +763,9 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 7':
                 outputContainer.innerHTML =
                 `<p class = "Conclusion" id = "Conclusion" > 
-                <a id = "paper-contribution"> <i class = "fas fa-circle"> </i> Show the contribution of this paper </a>
+                <a id = "paper-contribution"> Show the contribution of this paper </a>
                 <br>
-                <a id = "future-work"  > <i class = "fas fa-circle"> </i> Show future work </a>
+                <a id = "future-work"  > Show future work </a>
               </p>`;
                 break;
               // Add cases for other options if needed
