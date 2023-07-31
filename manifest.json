@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "UIT Paper Proofing Extension",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "UIT Paper Proofing Extension",
   "icons": {
     "16": "images/icon-16.png",
@@ -11,16 +11,17 @@
   },
 
   "content_scripts": [
-  {
-  "matches": ["https://www.overleaf.com/*",
-"file:///D:/UIT/HK4/UIT%20extension/Paper%20proofing%20UIT/popup-content.html"],
-  "js": ["content-script.js"]
-  }
-  ],
+    {
+      "matches": ["https://www.overleaf.com/*",
+        "file:///D:/UIT/HK4/UIT%20extension/Paper%20proofing%20UIT/popup-content.html"],
+      "js": ["content-script.js", "diff_match_patch.js"]
+    }
+  ]
+  ,
   "web_accessible_resources": [
     {
       "resources": [
-        "popup-content.html", "loader.html"
+        "popup-content.html", "loader.html", "diff_match_patch.js"
       ],
       "matches": [
         "<all_urls>"
