@@ -10,53 +10,46 @@
         
       .box {
         position:fixed;
-        width: 400px; 
+        width: 420px; 
         height: 350px;
         left: 40%;
         top:15%;
-        max-width: 905px;
-        max-height: 951px;
+        margin-left: -400px; /* Half of the width to center */
         margin: 20px auto;
         padding: 20px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   
-        background: rgb(1,5,29);
-background: -moz-linear-gradient(90deg, rgba(1,5,29,1) 0%, rgba(20,89,88,1) 49%, rgba(52,246,205,1) 100%);
-background: -webkit-linear-gradient(90deg, rgba(1,5,29,1) 0%, rgba(20,89,88,1) 49%, rgba(52,246,205,1) 100%);
-background: linear-gradient(90deg, rgba(1,5,29,1) 0%, rgba(20,89,88,1) 49%, rgba(52,246,205,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endColorstr="#34f6cd",GradientType=1);
+        background: rgb(6, 158, 145);
+
         flex-wrap: wrap;
         justify-content: space-between;
         border-radius: 5%;
-        opacity: 0.9;
-       
-        visibility:initial;
+        
       }
-      .source {
-        flex-basis: 25%;
-        padding: 10px;
-        color :azure;
-        font-family:cursive;
-        overflow: auto;
-        display: none;
-      }
+    
       
       .output {
-        padding: 10px;
         color : white;
         overflow: auto;
         font-family: cursive;
         box-sizing: border-box;
-       
-       
-        padding: 10px;
+       width: calc(100% - 0px);
+        font-size: 25px;
         margin-top: -30px;
       }
+      
+    .output h2 {
+      /* Add display: flex to make the links expand */
+      display: flex;
+      /* Adjust the padding as needed */
+      padding: 0 0px;
+      /* ... Your existing styles ... */
+    }
       .output h2 span{
-        
+        flex-grow: 2;
         font-size: 19px;
         color : white;
-        
+        padding: 2px;
       }
       .paraphrase {
         padding: 10px;
@@ -66,7 +59,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         box-sizing: border-box;
        margin-left: 115px;
        
-      font-size: 19px;
+      font-size: 22px;
         margin-top: -37px;
       }
       
@@ -79,53 +72,39 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         font-size: 100cm;       
       }
       
-      .input-textarea {
-        width: 100%;
-        min-height: 100px;
-        padding: 10px;
-        box-sizing:border-box;
-    
-        background-color: white;
-        font-size: 19px;
-        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        border-radius: 7%;
-        display: none;
-      }
+      
      
       .box-header { 
         /*background: rgb(2,0,36);
         background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(22,0,29,1) 35%, rgba(0,212,255,1) 100%);
         */
         color : white; 
-        font-size: 22px;
-        text-align: center;
+        font-size: 17px;
+        text-align: left;
+      margin-top: 50px;
+    
       }
       .output-container {
-        display: fixed;
         text-decoration: chocolate;
-        justify-content: center;
-        align-items: center;
-        min-height: 100px;
+      
+  
         margin-top: -35px;
-        width: 100%;
-        
+       
+        overflow-x: hidden; 
       }
       .output-textarea {
-         width: 100%;
-        height: 180px;
-        padding: 10px;
+        width: auto;/* Subtract the width of the navigation bar (100px) */
+        height: 230px;
         box-sizing: border-box;
-        resize: none;
-        background: rgb(0,0,0);
-        background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
+        padding:  2px;
+        background-color: white; /* Set the background to white, completely opaque */
         font-size: 17px;
-        margin-top: 50px;
+        margin-top: 40px;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        overflow-y: auto;
-        color: black;
-       border-radius: 9px;
-        
-      }
+        color: black; /* Set the text color to black for better contrast */
+        border-radius: 9px;
+       
+      }      
       .output-textarea::-webkit-scrollbar {
   width: 8px;
 }
@@ -153,31 +132,32 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
       .approve-button {
       background-color: white;
        
-      padding: 2px 10px;
+      padding: 2px 5px;
       font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 5px;
+      font-size: 14px;
       position:fixed;
-      margin-left: 232px;
+      margin-left: 123px;
       width: 113px;
+      margin-top :0px ;
     }
     .copy-button {
       background-color: white;
 
-      padding: 2px 10px;
+      padding: 2px 5px;
       font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 5px;
-      position:fixed;
-      margin-left: 125px;
+      font-size: 14px;
+      position:absolute;
+      margin-left: 19px;
       overflow-wrap: break-word;
       width: 100px;
+      margin-top: 0px;
+      
     }
     .copy-button i {
   margin-right: 5px;
@@ -186,13 +166,13 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
   margin-right: 5px;
 }
 .close-button {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      color: white;
-      font-size: 28px;
-      transition: transform 0.2s ease-in-out;
+  position: absolute;
+  top: 10px;
+  right: -25px;
+  cursor: pointer;
+  color: black;
+  font-size: 25px;
+  transition: transform 0.2s ease-in-out;
     }
 
     .close-button:hover {
@@ -201,7 +181,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
 
     .output h2 .dropdown {
       position: relative;
-      display: inline-block;
+      display: inline-block;  
       cursor: pointer;
     }
     .output h2.dropdown::-webkit-scrollbar-thumb:hover {
@@ -222,8 +202,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#01051d",endCo
         cursor: pointer;
         color: white;
         /* New CSS properties for vertical display */
-        top: 25%;
-        left: 235px;
+        top: 12%;
+        left: 260px;
         background: rgb(0,0,0);
         background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,255,255,1) 0%, rgba(247,249,251,1) 5%, rgba(247,249,250,1) 81%, rgba(255,255,255,1) 97%, rgba(247,249,250,1) 100%, rgba(0,0,0,1) 100%, rgba(0,0,0,1) 100%);
         width:120px ;
@@ -294,25 +274,27 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
   font-size: 18px;
 
 }
+.box-footer {
+  margin-top: 15px;
+}
+
 
   </style>
     
   </head>
 
   <body>
-   
+    
+      
     <div class="box">
       <span class="close-button">
         <i class="fas fa-times"></i>
       </span>
-        <div class="box-header" >
-            <div class = "title"> <span>PAPER PROOFING</span>  </div>
-    </div>
       
     <div class="output">
         <h2> 
-          <span id="suggestion-tab" class="active-tab">Suggestion | </span>
-          <span id="paraphrase-tab" class="paraphrase-link"> Paraphrase |</span>
+          <span id="suggestion-tab" class="active-tab"> Grammar  |   </span>
+          <span id="paraphrase-tab" class="paraphrase-link"> Paraphrase   |</span>
           <span id="section-tab" class="active-tab"> Section <i class="fas fa-caret-down"></i>
             <div id="dropdown-content" class="dropdown-content" >
               <a href="#" data-section="Option 1">Title</a>
@@ -333,9 +315,12 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
       </div> 
 
         <!-- <div><p id="output-textarea"></p></div> -->
+       <div class = "box-footer">
+        <span class = "box-header">PAPER PROOFING</span> 
+  
         <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i>Copy</button>
         <button class="approve-button" id="approve-button"><i class="fa fa-check" aria-hidden="true"></i>Approve</button>
 
       </div>
-      
+    </div>
     </div>
