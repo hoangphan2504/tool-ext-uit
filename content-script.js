@@ -119,8 +119,8 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
             try{
               Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
-              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-              //const baseUrl = 'http://localhost:3001/api/check';
+             // const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              const baseUrl = 'http://localhost:3001/api/check';
               // // Construct the complete URL
               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
@@ -490,8 +490,8 @@ async function Loading(selectionTextRange, selectionText) {
         let abs1Fetched = false
         async function fetchAbstract1() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/abstract1';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/abstract1';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract1';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -500,6 +500,19 @@ async function Loading(selectionTextRange, selectionText) {
           } catch (err) {
             console.log(err);
           }}
+          let abs2Fetched = false
+          async function fetchAbstract2() {
+            try {
+             const baseUrl = 'http://localhost:3001/api/abstract2';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
+              // Make the fetch request
+              const result = await fetch(baseUrl);
+              const resultJson = await result.json();
+              abs2 = resultJson.output;
+              return abs2;
+            } catch (err) {
+              console.log(err);
+            }}
         
         // Introduction check :
         //1. check image superior
@@ -686,9 +699,9 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 2':
                   outputContainer.innerHTML =  
                   `<p class = "abstract-output" id = "abstract-output" > 
-                      <a id = "unsolved-prob" > <i class = "fas fa-circle"> </i> Show current unsolved problem </a>
+                      <a id = "unsolved-prob" > Show current unsolved problem </a>
                       <br>
-                      <a id = "solution"> <i class = "fas fa-circle"> </i> Solution for unsolved problem </a>
+                      <a id = "solution"> Solution for unsolved problem </a>
                       <br>              
                   </p>`;
                   if (!abs1Fetched) {
@@ -697,14 +710,23 @@ async function Loading(selectionTextRange, selectionText) {
                       .then(abs1 => {
                         // Update the output container with the paraphrase result
                           console.log(abs1);
-                          unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
+                          solution = tooltipContainer.querySelector('#solution')
                           if(abs1 =='Yes')
                           {
-
-                            unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
+                            console.log(1); // Return 1 if the text contains any of the dictionary words
+                            var icon = document.createElement("i");
+                            icon.className = "fas fa-check";
+                              icon.style.color = "green";
+                             solution.insertBefore(icon, solution.firstChild);
+                           // unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
                           }
                           else{
-                            unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+                            console.log(0); // Return 0 if the text does not contain any of the dictionary words
+                            var icon = document.createElement("i");
+                            icon.className = "fas fa-times";
+                            icon.style.color = "red";
+                            solution.insertBefore(icon, solution.firstChild);
+                            //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
                           }
                         // Set the flag to true indicating that the paraphrase has been fetched
                         abs1Fetched = true;
@@ -713,6 +735,38 @@ async function Loading(selectionTextRange, selectionText) {
                         console.log(err);
                       });
                 }
+                if (!abs2Fetched) {
+                  // Fetch the paraphrase if it hasn't been fetched before
+                  fetchAbstract2()
+                    .then(abs2 => {
+                      // Update the output container with the paraphrase result
+                        console.log(abs2);
+                        unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
+                        if(abs2 =='Yes')
+                        {
+                          console.log(1); // Return 1 if the text contains any of the dictionary words
+                          var icon = document.createElement("i");
+                          icon.className = "fas fa-check";
+                            icon.style.color = "green";
+                           unsolved_prob.insertBefore(icon, unsolved_prob.firstChild); 
+                          //unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
+                        }
+                        else{
+                          console.log(0); // Return 0 if the text does not contain any of the dictionary words
+                            var icon = document.createElement("i");
+                            icon.className = "fas fa-times";
+                            icon.style.color = "red";
+                            unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
+                          //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+                        }
+                      // Set the flag to true indicating that the paraphrase has been fetched
+                      abs2Fetched = true;
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+              }
+
                   break;
                 case 'Option 3':
                   outputContainer.innerHTML =
