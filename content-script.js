@@ -118,6 +118,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
         if(selectionText.length > 0){
             try{
               //bỏ loading đi
+              
                 Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
@@ -129,8 +130,9 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                 const result = await fetch(url);
                 //
                 const resultJson = await result.json();
-                
+                console.log("selectionText: ", selectionText);
                 let correctedGrammar = resultJson.output.correctedGrammar;
+                console.log("grammar",correctedGrammar);
                 let newVersion = resultJson.output.correctedGrammar;
                 const dmp = new diff_match_patch();
                 const diffs = dmp.diff_main(selectionText, correctedGrammar);
@@ -235,6 +237,106 @@ async function Loading(selectionTextRange, selectionText) {
           // Enable/disable buttons based on conditions
           updateButtonState();
         }
+
+        const acceptClicked = (element) => {
+          // Check if del is a <del> tag
+            console.log(element.tagName);
+          if (element && element.tagName === 'DEL') {
+            console.log(1,"remove trong accept");
+            const insTag = element.nextSibling;
+            if(insTag && insTag.tagName === 'INS' )
+            {
+              const text = insTag.textContent;
+              const spanElement = document.createElement('span');
+              spanElement.textContent = text;
+              insTag.parentNode.replaceChild(spanElement, insTag);
+            }
+            element.remove()
+          } 
+          else {
+            // If del is an <ins> tag, convert it to <span> and remove the background
+            if (element && element.tagName === 'INS') {
+                    const text = element.textContent;
+                    const spanElement = document.createElement('span');
+                    spanElement.textContent = text;
+                    element.parentNode.replaceChild(spanElement, element);
+                    //console.log(2, spanElement);
+                   console.log("đổi span trong accept");
+                    
+            }
+          }
+          combineSpans()
+                // Hide the buttons after the operation
+                acceptButton.style.display = "none";
+                rejectButton.style.display = "none";
+        }
+          
+        const rejectClicked = (element) => {
+            // Check if del is an <ins> tag
+            if (element && element.tagName === 'INS') {
+              // Remove the <ins> tag and its background
+                console.log("remove trong reject");
+              element.remove()
+            } else {
+              // If del is a <del> tag, convert it to <span> and remove the background
+              if (element && element.tagName === 'DEL') {
+                const text = element.textContent;
+                const spanElement = document.createElement('span');
+                spanElement.textContent = text;
+                element.parentNode.replaceChild(spanElement, element);
+                console.log("đổi span trong reject");
+    
+              }
+            }
+            combineSpans();
+            // Hide the buttons after the operation
+            acceptButton.style.display = "none";
+            rejectButton.style.display = "none";
+        }
+    
+        const delGroupPressed = (event) => {
+          currentElement = event.target; // Store the target element
+          rejectButton.style.display = "block";
+          acceptButton.style.display = "block";
+          acceptButton.addEventListener("click", () => acceptClicked(currentElement));
+          rejectButton.addEventListener("click", () => rejectClicked(currentElement));
+        } ;
+    
+    
+        const dels = tooltipContainer.querySelector("#output-textarea");
+        const acceptButton = tooltipContainer.querySelector("#accept-button");
+        const rejectButton = tooltipContainer.querySelector("#reject-button");
+    
+        dels.addEventListener("click", delGroupPressed);
+    
+        function combineSpans() {
+          const outputDiv = tooltipContainer.querySelector("#output-textarea");
+          if (areAllSpans(outputDiv)) {
+            const spanText = outputDiv.textContent;
+            const spanElement = document.createElement('span');
+            spanElement.textContent = spanText;
+            outputDiv.innerHTML = '';
+            outputDiv.appendChild(spanElement);
+            answer = spanText;
+            console.log("answer cuối cùng", answer);
+            document.querySelector(".copy-button").style.display = "block";
+            document.querySelector(".approve-button").style.display = "block";
+          }
+          else{
+            console.log("no");
+          }
+        }
+    
+        function areAllSpans(element) {
+          const children = element.childNodes;
+          for (const child of children) {
+            if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'SPAN') {
+              return false;
+            }
+         }
+          return true;
+      }
+
   
         let paraphraseFetched = false;
         let parap = "waiting...";
@@ -246,6 +348,7 @@ async function Loading(selectionTextRange, selectionText) {
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
+            console.log(resultJson.output);
             parap = resultJson.output;
             return parap;
           } catch (err) {
@@ -270,9 +373,9 @@ async function Loading(selectionTextRange, selectionText) {
           if (!paraphraseFetched) {
             // Fetch the paraphrase if it hasn't been fetched before
             fetchParaphrase()
-              .then(para => {
+              .then(parap => {
                 // Update the output container with the paraphrase result
-                outputContainer.textContent = para;
+                outputContainer.textContent = parap;
                 // Set the flag to true indicating that the paraphrase has been fetched
                 paraphraseFetched = true;
               })
@@ -327,7 +430,7 @@ async function Loading(selectionTextRange, selectionText) {
         // Add event listener to the "Approve" button
         approveButton.addEventListener('click', () => {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
-          const outputContent = isSuggestionTabActive ? newVersion : parap;
+          const outputContent = isSuggestionTabActive ? answer : parap;
           
           
           let op = outputContent;
@@ -347,7 +450,7 @@ async function Loading(selectionTextRange, selectionText) {
         copyButton.addEventListener('click', () => {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
           console.log("bấm click");
-          let text = isSuggestionTabActive ? newVersion : parap;
+          let text = isSuggestionTabActive ? answer : parap;
           if(text === newVersion)
           {
             console.log("check");
@@ -501,6 +604,22 @@ async function Loading(selectionTextRange, selectionText) {
           } catch (err) {
             console.log(err);
           }}
+
+          let abs2Fetched = false
+          async function fetchAbstract2() {
+            try {
+             //const baseUrl = 'http://localhost:3001/api/abstract2';
+              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
+              // Make the fetch request
+              const result = await fetch(baseUrl);
+              const resultJson = await result.json();
+              abs2 = resultJson.output;
+              return abs2;
+            } catch (err) {
+              console.log(err);
+            }}
+
+      
         
         // Introduction check :
         //1. check image superior
@@ -700,20 +819,20 @@ async function Loading(selectionTextRange, selectionText) {
                       .then(abs1 => {
                         // Update the output container with the paraphrase result
                           console.log(abs1);
-                          unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
+                          solution = tooltipContainer.querySelector('#solution')
                           if(abs1 =='Yes')
                           {
                             var icon = document.createElement("i");
                             icon.className = "fas fa-check";
                             icon.style.color = "green";
-                            unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
+                            solution.insertBefore(icon, solution.firstChild);
                     
                           }
                           else{
                             var icon = document.createElement("i");
                             icon.className = "fas fa-times";
                             icon.style.color = "red";
-                            unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
+                            solution.insertBefore(icon, solution.firstChild);
                             
                           }
                         // Set the flag to true indicating that the paraphrase has been fetched
@@ -722,7 +841,40 @@ async function Loading(selectionTextRange, selectionText) {
                       .catch(err => {
                         console.log(err);
                       });
+                  }
+                  if (!abs2Fetched) {
+                    // Fetch the paraphrase if it hasn't been fetched before
+                    fetchAbstract2()
+                      .then(abs2 => {
+                        // Update the output container with the paraphrase result
+                          console.log(abs2);
+                          unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
+                          if(abs2 =='Yes')
+                          {
+                            console.log(1); // Return 1 if the text contains any of the dictionary words
+                            var icon = document.createElement("i");
+                            icon.className = "fas fa-check";
+                              icon.style.color = "green";
+                             unsolved_prob.insertBefore(icon, unsolved_prob.firstChild); 
+                            //unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
+                          }
+                          else{
+                            console.log(0); // Return 0 if the text does not contain any of the dictionary words
+                              var icon = document.createElement("i");
+                              icon.className = "fas fa-times";
+                              icon.style.color = "red";
+                              unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
+                            //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+                          }
+                        // Set the flag to true indicating that the paraphrase has been fetched
+                        abs2Fetched = true;
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
                 }
+
+
                   break;
                 case 'Option 3':
                   outputContainer.innerHTML =
