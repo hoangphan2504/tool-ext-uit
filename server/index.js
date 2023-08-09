@@ -119,7 +119,7 @@ app.get("/api/abstract1", async (req, res) => {
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Does this text show any solution to the problem in this latex code ? the latex code is: '${input}'` },
+            content: `Does this text show any solution to the unsolved problem  in this latex code ? the latex code is: '${input}'` },
           ]
         });
 
@@ -149,7 +149,49 @@ app.get("/api/abstract1", async (req, res) => {
   else console.log("chua truy cap duoc if tren");
 })
 
-  
+app.get("/api/abstract2", async (req, res) => {
+  const input = paraInput;
+  console.log(input, "abstract_2");
+  let Result = "";
+  console.log("check check");
+  if(input != "") {
+        // paraphrase
+
+        const abstractv2 = await openai.createChatCompletion({
+          model: "gpt-3.5-turbo",
+          messages: [
+          // Include previous conversation messages
+            { role: "user", 
+            content: `Does it show a current unsolved problem of the problem, this is a very deep problem, not a general problem all problems are encountered in this latex code? The latex code is : '${input}'` },
+          ]
+        });
+
+        const abstract2 = abstractv2.data.choices[0].message.content;
+        console.log("abstract2",abstract2.substring(0, 3));
+
+        let firstThreeLetters;
+
+        if (abstract2.startsWith('Yes')) {
+          firstThreeLetters = abstract2.substring(0, 3);
+        } else if (abstract2.startsWith('No')) {
+          firstThreeLetters = abstract2.substring(0, 2);
+        } else {
+          // Handle the case when the string does not start with 'Yes' or 'No'
+          console.log("The string doesn't start with 'Yes' or 'No'");
+        }
+
+        console.log(firstThreeLetters); // Output: 'Yes'
+
+
+        abstract2Result =  firstThreeLetters;
+        // Result = paraphrase;
+
+        res.status(200).json({output: abstract2Result});
+
+  }
+  else console.log("chua truy cap duoc if tren");
+})
+ 
 
 
 app.listen(3001, function (err) {
