@@ -117,19 +117,23 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
         console.log(selectionText);
         if(selectionText.length > 0){
             try{
-              Loading(selectionTextRange, selectionText);
+              //bỏ loading đi
+              
+                Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
-             // const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
               const baseUrl = 'http://localhost:3001/api/check';
-              // // Construct the complete URL
+              //  Construct the complete URL
               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
-              // // Make the fetch request
-              const result = await fetch(url);
+              // Make the fetch request
+                const result = await fetch(url);
                 //
                 const resultJson = await result.json();
-                
+                console.log("selectionText: ", selectionText);
                 let correctedGrammar = resultJson.output.correctedGrammar;
+                console.log("grammar",correctedGrammar);
+                let newVersion = resultJson.output.correctedGrammar;
                 const dmp = new diff_match_patch();
                 const diffs = dmp.diff_main(selectionText, correctedGrammar);
                 dmp.diff_cleanupSemantic(diffs);
@@ -143,7 +147,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                 //remove loading 
                 const loading = document.querySelector('div#loading-ext-uit')
                 loading.remove();
-                renderResult(selectionTextRange, selectionText, correctedGrammar, input, selectedElement, getRange, selectionTextNode);
+                renderResult(selectionTextRange, selectionText, correctedGrammar, input, selectedElement, getRange, selectionTextNode, newVersion);
             } 
             catch(err){
                 console.log(err);
@@ -177,7 +181,7 @@ async function Loading(selectionTextRange, selectionText) {
   }
   
 
-  function renderResult(selectionTextRange, selectionText, answer, input, selectedElement, getRange, selectionTextNode) {
+  function renderResult(selectionTextRange, selectionText, answer, input, selectedElement, getRange, selectionTextNode, newVersion) {
     const tooltipWrapper = document.createElement('div');
     tooltipWrapper.id = 'research-result-ext-uit';
     const tooltipContainer = document.createElement('div');
@@ -228,22 +232,123 @@ async function Loading(selectionTextRange, selectionText) {
           suggestionTab.style.fontWeight = 'bold';
           paraphraseTab.style.fontWeight = 'normal';
           // Update the output content with the suggestion content
-          outputContainer.textContent = grammar;
+          outputContainer.innerHTML = answer;
   
           // Enable/disable buttons based on conditions
           updateButtonState();
         }
+
+        const acceptClicked = (element) => {
+          // Check if del is a <del> tag
+            console.log(element.tagName);
+          if (element && element.tagName === 'DEL') {
+            console.log(1,"remove trong accept");
+            const insTag = element.nextSibling;
+            if(insTag && insTag.tagName === 'INS' )
+            {
+              const text = insTag.textContent;
+              const spanElement = document.createElement('span');
+              spanElement.textContent = text;
+              insTag.parentNode.replaceChild(spanElement, insTag);
+            }
+            element.remove()
+          } 
+          else {
+            // If del is an <ins> tag, convert it to <span> and remove the background
+            if (element && element.tagName === 'INS') {
+                    const text = element.textContent;
+                    const spanElement = document.createElement('span');
+                    spanElement.textContent = text;
+                    element.parentNode.replaceChild(spanElement, element);
+                    //console.log(2, spanElement);
+                   console.log("đổi span trong accept");
+                    
+            }
+          }
+          combineSpans()
+                // Hide the buttons after the operation
+                acceptButton.style.display = "none";
+                rejectButton.style.display = "none";
+        }
+          
+        const rejectClicked = (element) => {
+            // Check if del is an <ins> tag
+            if (element && element.tagName === 'INS') {
+              // Remove the <ins> tag and its background
+                console.log("remove trong reject");
+              element.remove()
+            } else {
+              // If del is a <del> tag, convert it to <span> and remove the background
+              if (element && element.tagName === 'DEL') {
+                const text = element.textContent;
+                const spanElement = document.createElement('span');
+                spanElement.textContent = text;
+                element.parentNode.replaceChild(spanElement, element);
+                console.log("đổi span trong reject");
+    
+              }
+            }
+            combineSpans();
+            // Hide the buttons after the operation
+            acceptButton.style.display = "none";
+            rejectButton.style.display = "none";
+        }
+    
+        const delGroupPressed = (event) => {
+          currentElement = event.target; // Store the target element
+          rejectButton.style.display = "block";
+          acceptButton.style.display = "block";
+          acceptButton.addEventListener("click", () => acceptClicked(currentElement));
+          rejectButton.addEventListener("click", () => rejectClicked(currentElement));
+        } ;
+    
+    
+        const dels = tooltipContainer.querySelector("#output-textarea");
+        const acceptButton = tooltipContainer.querySelector("#accept-button");
+        const rejectButton = tooltipContainer.querySelector("#reject-button");
+    
+        dels.addEventListener("click", delGroupPressed);
+    
+        function combineSpans() {
+          const outputDiv = tooltipContainer.querySelector("#output-textarea");
+          if (areAllSpans(outputDiv)) {
+            const spanText = outputDiv.textContent;
+            const spanElement = document.createElement('span');
+            spanElement.textContent = spanText;
+            outputDiv.innerHTML = '';
+            outputDiv.appendChild(spanElement);
+            answer = spanText;
+            console.log("answer cuối cùng", answer);
+            document.querySelector(".copy-button").style.display = "block";
+            document.querySelector(".approve-button").style.display = "block";
+          }
+          else{
+            console.log("no");
+          }
+        }
+    
+        function areAllSpans(element) {
+          const children = element.childNodes;
+          for (const child of children) {
+            if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'SPAN') {
+              return false;
+            }
+         }
+          return true;
+      }
+
   
         let paraphraseFetched = false;
         let parap = "waiting...";
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/para';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/para';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
+            console.log(resultJson.output);
             parap = resultJson.output;
             return parap;
           } catch (err) {
@@ -268,9 +373,9 @@ async function Loading(selectionTextRange, selectionText) {
           if (!paraphraseFetched) {
             // Fetch the paraphrase if it hasn't been fetched before
             fetchParaphrase()
-              .then(para => {
+              .then(parap => {
                 // Update the output container with the paraphrase result
-                outputContainer.textContent = para;
+                outputContainer.textContent = parap;
                 // Set the flag to true indicating that the paraphrase has been fetched
                 paraphraseFetched = true;
               })
@@ -346,7 +451,7 @@ async function Loading(selectionTextRange, selectionText) {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
           console.log("bấm click");
           let text = isSuggestionTabActive ? answer : parap;
-          if(text === answer)
+          if(text === newVersion)
           {
             console.log("check");
             isCopiedGrammar = true;
@@ -399,32 +504,31 @@ async function Loading(selectionTextRange, selectionText) {
         const sectionTab = tooltipContainer.querySelector('#section-tab');
         
         // Function to handle the dropdown menu display
-        
-      function toggleDropdown() {
-  var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
-  dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
-}
+        function toggleDropdown() {
+          var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+          dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' : 'block';
+        }
 
-// Function to handle the selection of options in the dropdown - when click on content, the dropdown disappear
-      function handleDropdownOptionSelect() {
-        // Hide the dropdown content when an option is selected
+        sectionTab.addEventListener('click', toggleDropdown);
+
+        // Function to handle the selection of options in the dropdown - when click on content, the dropdown disappear
+        function handleDropdownOptionSelect() {
+          // Hide the dropdown content when an option is selected
+          var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
+          dropdownContent.style.display = 'none';
+        }
+
+        // Attach a click event listener to each dropdown option
+        var dropdownOptions = tooltipContainer.querySelectorAll('.dropdown-option');
+        dropdownOptions.forEach(function (option) {
+          option.addEventListener('click', handleDropdownOptionSelect);
+        });
+
         var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
-        dropdownContent.style.display = 'none';
-      }
-
-      // Attach a click event listener to each dropdown option
-      var dropdownOptions = tooltipContainer.querySelectorAll('.dropdown-option');
-      dropdownOptions.forEach(function (option) {
-        option.addEventListener('click', handleDropdownOptionSelect);
-      });
-
-      var dropdownContent = tooltipContainer.querySelector('.dropdown-content');
-      dropdownContent.addEventListener('click', function (event) {
-        // Stop the event from propagating to the sectionTab element
-        event.stopPropagation();
-      });
-
-      sectionTab.addEventListener('click', toggleDropdown);
+        dropdownContent.addEventListener('click', function (event) {
+          // Stop the event from propagating to the sectionTab element
+          event.stopPropagation();
+        });
 
         //TITLE function check
         function containsDictionaryWord(input){
@@ -456,8 +560,8 @@ async function Loading(selectionTextRange, selectionText) {
         }
 
         function checkLengthTitile(input){
-          const match = input.match(/\{([^}]+)\}/);
-          if (match) {
+          const match = input
+          if (1) {
             const extractedText = match[1];
             // Split the extracted text into words
             const words = extractedText.split(/\s+/);
@@ -491,7 +595,7 @@ async function Loading(selectionTextRange, selectionText) {
         async function fetchAbstract1() {
           try {
             const baseUrl = 'http://localhost:3001/api/abstract1';
-            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract1';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -500,6 +604,7 @@ async function Loading(selectionTextRange, selectionText) {
           } catch (err) {
             console.log(err);
           }}
+
           let abs2Fetched = false
           async function fetchAbstract2() {
             try {
@@ -513,7 +618,11 @@ async function Loading(selectionTextRange, selectionText) {
             } catch (err) {
               console.log(err);
             }}
+
+      
         
+        // Introduction check :
+        //1. check image superior
         // Introduction check :
         //1. check image superior
         function checkTeaser(input){
@@ -665,7 +774,7 @@ async function Loading(selectionTextRange, selectionText) {
        // general_properties.innerHTML += `<i class="fas fa-check" style="color: green;"></i>`;
       } else {
         console.log(0); // Return 0 if the text does not contain any of the dictionary words
-        var icon = document.createElement("i");
+          var icon = document.createElement("i");
           icon.className = "fas fa-times";
           icon.style.color = "red";
           general_properties.insertBefore(icon, general_properties.firstChild);
@@ -699,9 +808,9 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 2':
                   outputContainer.innerHTML =  
                   `<p class = "abstract-output" id = "abstract-output" > 
-                      <a id = "unsolved-prob" > Show current unsolved problem </a>
+                      <a id = "unsolved-prob" >  Show current unsolved problem </a>
                       <br>
-                      <a id = "solution"> Solution for unsolved problem </a>
+                      <a id = "solution">   Solution for unsolved problem </a>
                       <br>              
                   </p>`;
                   if (!abs1Fetched) {
@@ -713,20 +822,18 @@ async function Loading(selectionTextRange, selectionText) {
                           solution = tooltipContainer.querySelector('#solution')
                           if(abs1 =='Yes')
                           {
-                            console.log(1); // Return 1 if the text contains any of the dictionary words
                             var icon = document.createElement("i");
                             icon.className = "fas fa-check";
-                              icon.style.color = "green";
-                             solution.insertBefore(icon, solution.firstChild);
-                           // unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
+                            icon.style.color = "green";
+                            solution.insertBefore(icon, solution.firstChild);
+                    
                           }
                           else{
-                            console.log(0); // Return 0 if the text does not contain any of the dictionary words
                             var icon = document.createElement("i");
                             icon.className = "fas fa-times";
                             icon.style.color = "red";
                             solution.insertBefore(icon, solution.firstChild);
-                            //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+                            
                           }
                         // Set the flag to true indicating that the paraphrase has been fetched
                         abs1Fetched = true;
@@ -734,44 +841,45 @@ async function Loading(selectionTextRange, selectionText) {
                       .catch(err => {
                         console.log(err);
                       });
-                }
-                if (!abs2Fetched) {
-                  // Fetch the paraphrase if it hasn't been fetched before
-                  fetchAbstract2()
-                    .then(abs2 => {
-                      // Update the output container with the paraphrase result
-                        console.log(abs2);
-                        unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
-                        if(abs2 =='Yes')
-                        {
-                          console.log(1); // Return 1 if the text contains any of the dictionary words
-                          var icon = document.createElement("i");
-                          icon.className = "fas fa-check";
-                            icon.style.color = "green";
-                           unsolved_prob.insertBefore(icon, unsolved_prob.firstChild); 
-                          //unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
-                        }
-                        else{
-                          console.log(0); // Return 0 if the text does not contain any of the dictionary words
+                  }
+                  if (!abs2Fetched) {
+                    // Fetch the paraphrase if it hasn't been fetched before
+                    fetchAbstract2()
+                      .then(abs2 => {
+                        // Update the output container with the paraphrase result
+                          console.log(abs2);
+                          unsolved_prob = tooltipContainer.querySelector('#unsolved-prob')
+                          if(abs2 =='Yes')
+                          {
+                            console.log(1); // Return 1 if the text contains any of the dictionary words
                             var icon = document.createElement("i");
-                            icon.className = "fas fa-times";
-                            icon.style.color = "red";
-                            unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
-                          //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
-                        }
-                      // Set the flag to true indicating that the paraphrase has been fetched
-                      abs2Fetched = true;
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
-              }
+                            icon.className = "fas fa-check";
+                              icon.style.color = "green";
+                             unsolved_prob.insertBefore(icon, unsolved_prob.firstChild); 
+                            //unsolved_prob.innerHTML +=  `<i class="fas fa-check" style="color: green;"></i>`;
+                          }
+                          else{
+                            console.log(0); // Return 0 if the text does not contain any of the dictionary words
+                              var icon = document.createElement("i");
+                              icon.className = "fas fa-times";
+                              icon.style.color = "red";
+                              unsolved_prob.insertBefore(icon, unsolved_prob.firstChild);
+                            //unsolved_prob.innerHTML+= `<i class="fas fa-times" style="color: red;"></i>`;
+                          }
+                        // Set the flag to true indicating that the paraphrase has been fetched
+                        abs2Fetched = true;
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                }
+
 
                   break;
                 case 'Option 3':
                   outputContainer.innerHTML =
                   `<p class = "intro-output" id = "intro-output" > 
-                  <a id = "Teaser" > Has Teaser </a>
+                  <a id = "Teaser" >  Has Teaser </a>
                   <br>
                   <a id = "highly-general-idea" > Solution for the problem is highly general (Don't use combine,using) </a>
                   <br>
@@ -784,9 +892,9 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 4':
                   outputContainer.innerHTML = 
                   `<p class = "Related-work" id = "Related-work" "> 
-                  <a id = "show-paper"> Show at least 3 recent papers (2 years back) </a>
+                  <a id = "show-paper">  Show at least 3 recent papers (2 years back) </a>
                   <br>
-                  <a id = "pros-cons"  > Show pros and cons for each method </a>
+                  <a id = "pros-cons"  >  Show pros and cons for each method </a>
                 </p>`;
                 break;
                 case 'Option 5':
@@ -794,7 +902,7 @@ async function Loading(selectionTextRange, selectionText) {
                   `<p class = "proposed-output" id = "proposed-output"  "> 
                   <a id = "general-scheme"> General scheme </a>
                   <br>
-                  <a id = "caption"  > Caption describe the main components of General Scheme </a>
+                  <a id = "caption"  >   Caption describe the main components of General Scheme </a>
                   <br>              
                   <a id = "formula"> Explicit formula</a>
                 </p>`;
@@ -803,12 +911,6 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 6':
                 outputContainer.innerHTML = 
                 `<p class = "Experiments" id = "Experiments" > 
-                <a id = "Empirical-dataset">Describe empirical dataset: name,quantity,data properties </a>
-                  <br>
-                  <a id = "Empirical-protocol"  >Describe empirical protocol: train/val/test, metrics  </a>
-                  <br>              
-                  <a id = "Hyperparameter">Describe hyperparameter : learning rate, train:valid, K fold, epoch, lambda</a>
-                  <br>
                   <a id = "General-properties"> Quantitative Analysis and Visualizations</a>
                   <br>
               </p>`;
@@ -817,9 +919,9 @@ async function Loading(selectionTextRange, selectionText) {
               case 'Option 7':
                 outputContainer.innerHTML =
                 `<p class = "Conclusion" id = "Conclusion" > 
-                <a id = "paper-contribution"> Show the contribution of this paper </a>
+                <a id = "paper-contribution">  Show the contribution of this paper </a>
                 <br>
-                <a id = "future-work"  > Show future work </a>
+                <a id = "future-work">  Show future work </a>
               </p>`;
                 break;
               // Add cases for other options if needed
@@ -923,5 +1025,3 @@ function showExtensionIcon() {
     }
 }
     
-
-
