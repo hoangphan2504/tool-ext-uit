@@ -167,16 +167,59 @@
 .close-button {
   position: absolute;
   top: 10px;
-  right: -25px;
+  right: -30px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
   color: black;
-  font-size: 25px;
+  font-size: 15px;
   transition: transform 0.2s ease-in-out;
+  -webkit-transition:-webkit-transform .25s, opacity .25s;
+  -moz-transition:-moz-transform .25s, opacity .25s;
+  transition: transform .25s, opacity .25s;
+  
+  border-radius: 50%;
+  padding: 0.5em;
+  border: 0.5px solid  black;
+  
     }
 
     .close-button:hover {
       transform: scale(1.2);
+      -webkit-transform: rotate(350deg);
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+		opacity:1;
+  
+
     }
+    .close-button::before {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: black;
+  
+  width: 2px;
+  left: 11px;
+  top: 4px;
+  bottom: 5.5px;
+ 
+  
+  transform: rotate(45deg);
+}
+.close-button::after {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: black;
+  transform: rotate(45deg);
+  height: 2px;
+  top: 10px;
+  left: 5px;
+  right: 4.5px;
+  
+  background-color: black;
+}
 
     .output h2 .dropdown {
       position: relative;
@@ -303,15 +346,16 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
     width: 100px;
     margin-top: -27px;
 }
+
   </style>
     
   </head>
 
-  <body>
+  <body> 
     <div class="box">
-      <span class="close-button">
-        <i class="fas fa-times"></i>
-      </span>
+      <button class="close-button">
+        
+      </button>
       
     <div class="output">
         <h2> 
@@ -339,10 +383,10 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
         <!-- <div><p id="output-textarea"></p></div> -->
        <div class = "box-footer">
         <span class = "box-header">PAPER PROOFING</span> 
-        <button class="accept-button" id="accept-button" style="display: block" >Accept</button>
-        <button class="reject-button" id="reject-button" style="display: block" >Reject</button>
-        <button class="copy-button" id="copy-button" style="display: none" ><i class="fas fa-copy" ></i>Copy</button>
-        <button class="approve-button" id="approve-button" style ="display:none" ><i class="fa fa-check" aria-hidden="true" ></i>Approve</button>
+        <button class="accept-button" id="accept-button" style="display: none" >Accept</button>
+        <button class="reject-button" id="reject-button" style="display: none" >Reject</button>
+        <button class="copy-button" id="copy-button" style="display: block" ><i class="fas fa-copy" ></i>Copy</button>
+        <button class="approve-button" id="approve-button" style ="display:block" ><i class="fa fa-check" aria-hidden="true" ></i>Approve</button>
       </div>
         <!-- <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i>Copy</button>
         <button class="approve-button" id="approve-button"><i class="fa fa-check" aria-hidden="true"></i>Approve</button> -->
