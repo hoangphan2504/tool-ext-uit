@@ -1,6 +1,6 @@
 console.log("Content script is runnIng", chrome);
 const bodyDOM = document.querySelector("body");
-let selectionText = "";
+let selectionText = ``;
 function injectHelperScript() {
   const scriptElement = document.createElement('script');
   scriptElement.src = chrome.runtime.getURL('diff_match_patch.js');
@@ -26,7 +26,7 @@ function getSelectedText() {
   else if (document.selection) {
       selectedText =
           document.selection.createRange().text;
-  } else return '';
+  } else return;
   // To write the selected text into the textarea
   return selectedText;
 }
@@ -782,7 +782,39 @@ async function Loading(selectionTextRange, selectionText) {
 
       }
     }
-        
+    // check realted year
+    function checkYearPaper(input) {
+const currentYear = new Date().getFullYear();
+
+// Find all occurrences of 'year = <year>' pattern
+const yearPattern = /year\s*=\s*{(\d{4})}/g;
+
+const matches = input.match(yearPattern);
+console.log(matches)
+
+
+// Extract years and count occurrences greater than or equal to the specified year
+const count = matches
+  .map(match => parseInt(match.match(/\d{4}/)))
+  .filter(year => year >= currentYear-2 && year <= currentYear)
+  .length;
+console.log(`Number of citations from ${currentYear} and later: ${count}`);
+showPaper=tooltipContainer.querySelector('#show-paper')
+if(count >= 3){
+  console.log(1) // return 1 if has at least 3 paper 
+  var icon = document.createElement("i");
+  icon.className = "fas fa-check";
+  icon.style.color = "green";
+  showPaper.insertBefore(icon,showPaper.firstChild);
+}
+else {
+  console.log(0); 
+  var icon = document.createElement("i");
+  icon.className = "fas fa-times";
+  icon.style.color = "red";
+  showPaper.insertBefore(icon, showPaper.firstChild);
+}
+    }
         
         
 
@@ -896,6 +928,8 @@ async function Loading(selectionTextRange, selectionText) {
                   <br>
                   <a id = "pros-cons"  >  Show pros and cons for each method </a>
                 </p>`;
+                checkYearPaper(input);
+
                 break;
                 case 'Option 5':
                   outputContainer.innerHTML = 
