@@ -28,6 +28,7 @@ function getSelectedText() {
           document.selection.createRange().text;
   } else return '';
   // To write the selected text into the textarea
+  console.log("trong h");
   return selectedText;
 }
 
@@ -118,7 +119,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
         if(selectionText.length > 0){
             try{
               //bỏ loading đi
-              
+              console.log("render", selectionText);
                 Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
               const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
@@ -134,11 +135,13 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                 let correctedGrammar = resultJson.output.correctedGrammar;
                 console.log("grammar",correctedGrammar);
                 let newVersion = resultJson.output.correctedGrammar;
-                const dmp = new diff_match_patch();
-                const diffs = dmp.diff_main(selectionText, correctedGrammar);
-                dmp.diff_cleanupSemantic(diffs);
+                 const dmp = new diff_match_patch();
+                 const diffs = dmp.diff_main(selectionText, correctedGrammar);
+                 dmp.diff_cleanupSemantic(diffs);
                 
-                correctedGrammar = dmp.diff_prettyHtml(diffs);
+                 correctedGrammar = dmp.diff_prettyHtml(diffs);
+
+                console.log("after corrrec", correctedGrammar);
 
                 const input = resultJson.output.input;
 
@@ -188,7 +191,7 @@ async function Loading(selectionTextRange, selectionText) {
     tooltipContainer.classList.add('box');
   
     const filePath = chrome.runtime.getURL('popup-content.html');
-  
+    console.log(100, answer);
     // Fetch the HTML content
     fetch(filePath)
       .then(response => response.text())
@@ -269,6 +272,8 @@ async function Loading(selectionTextRange, selectionText) {
                 // Hide the buttons after the operation
                 acceptButton.style.display = "none";
                 rejectButton.style.display = "none";
+                approveButton.style.display = "block";
+            copyButton.style.display = "block";
         }
           
         const rejectClicked = (element) => {
@@ -292,22 +297,61 @@ async function Loading(selectionTextRange, selectionText) {
             // Hide the buttons after the operation
             acceptButton.style.display = "none";
             rejectButton.style.display = "none";
+            approveButton.style.display = "block";
+            copyButton.style.display = "block";
         }
-    
+
+        let currentElement = null;
+
         const delGroupPressed = (event) => {
-          currentElement = event.target; // Store the target element
+          clickedElement  = event.target; // Store the target element
           rejectButton.style.display = "block";
           acceptButton.style.display = "block";
-          acceptButton.addEventListener("click", () => acceptClicked(currentElement));
-          rejectButton.addEventListener("click", () => rejectClicked(currentElement));
+          approveButton.style.display = "none";
+          copyButton.style.display = "none";
+
+          if (currentElement !== null) {
+            currentElement.style.fontWeight = "normal";
+          }
+          if (currentElement !== clickedElement) {
+            clickedElement.style.fontWeight = "bold";
+            currentElement = clickedElement;
+          } else {
+            currentElement = null;
+          }
+
+          acceptButton.addEventListener("click", () => acceptClicked(clickedElement));
+          rejectButton.addEventListener("click", () => rejectClicked(clickedElement));
         } ;
+
+        tooltipContainer.addEventListener("click", (event) => {
+          const isInsideOutputTextarea = outputContainer.contains(event.target);
+      
+          if (isInsideOutputTextarea) {
+            const isInsideElements = Array.from(dels).some((element) => {
+                return element.contains(event.target);
+            });
+    
+            if (!isInsideElements) {
+                // Show approve and copy buttons
+                acceptButton.style.display = "none";
+                rejectButton.style.display = "none";
+                approveButton.style.display = "block";
+                copyButton.style.display = "block";
+            }
+        }
+      });
     
     
-        const dels = tooltipContainer.querySelector("#output-textarea");
+        const dels = outputContainer.querySelectorAll("span, ins, del");
         const acceptButton = tooltipContainer.querySelector("#accept-button");
         const rejectButton = tooltipContainer.querySelector("#reject-button");
-    
-        dels.addEventListener("click", delGroupPressed);
+
+        dels.forEach((element) => {
+          element.addEventListener("click", delGroupPressed);
+      });
+
+        //dels.addEventListener("click", delGroupPressed);
     
         function combineSpans() {
           const outputDiv = tooltipContainer.querySelector("#output-textarea");
@@ -430,10 +474,48 @@ async function Loading(selectionTextRange, selectionText) {
         // Add event listener to the "Approve" button
         approveButton.addEventListener('click', () => {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
-          const outputContent = isSuggestionTabActive ? answer : parap;
+          const outputContent = isSuggestionTabActive ? answer: parap;
           
+          console.log(100000, outputContainer.innerHTML);
+
+          var tempElement = document.createElement("div");
+          tempElement.innerHTML = outputContainer.innerHTML;
           
-          let op = outputContent;
+          // Get all ins elements within the temporary element
+          var insElements = tempElement.getElementsByTagName("ins");
+          
+          // Convert ins tags to span tags and remove background
+          for (var i = 0; i < insElements.length; i++) {
+              var insElement = insElements[i];
+              var newSpan = document.createElement("span");
+              newSpan.innerHTML = insElement.innerHTML;
+              insElement.parentNode.replaceChild(newSpan, insElement);
+          }
+          
+          // Remove del tags
+          var delElements = tempElement.getElementsByTagName("del");
+          for (var i = delElements.length - 1; i >= 0; i--) {
+              var delElement = delElements[i];
+              delElement.parentNode.removeChild(delElement);
+          }
+          
+          // Combine span elements into one span
+          var combinedSpanText = "";
+          var spanElements = tempElement.getElementsByTagName("span");
+          for (var i = 0; i < spanElements.length; i++) {
+              combinedSpanText += spanElements[i].innerHTML;
+          }
+        
+          // Combine span elements into a single span
+          var combinedText = "";
+          for (var i = 0; i < spanElements.length; i++) {
+            combinedText += spanElements[i].innerHTML;
+          }
+          
+
+          let op = combinedText;
+          console.log("op", op);
+          
           try {
             if (selectionTextNode.rangeCount) {
               getRange.deleteContents();
@@ -451,7 +533,7 @@ async function Loading(selectionTextRange, selectionText) {
           const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
           console.log("bấm click");
           let text = isSuggestionTabActive ? answer : parap;
-          if(text === newVersion)
+          if(text === answer)
           {
             console.log("check");
             isCopiedGrammar = true;
@@ -464,9 +546,11 @@ async function Loading(selectionTextRange, selectionText) {
           }
 
           isCopied  = isSuggestionTabActive ? isCopiedGrammar : isCopiedPara;
+          console.log(isCopiedGrammar, isCopiedPara);
           navigator.clipboard.writeText(text)
             .then(() => {
               console.log('Text copied to clipboard');
+              console.log(isCopied);
               updateCopyButtonContent(isCopied);
             })
             .catch((error) => {
@@ -782,6 +866,39 @@ async function Loading(selectionTextRange, selectionText) {
 
       }
     }
+
+    function checkYearPaper(input) {
+      const currentYear = new Date().getFullYear();
+      
+      // Find all occurrences of 'year = <year>' pattern
+      const yearPattern = /year\s*=\s*{(\d{4})}/g;
+      
+      const matches = input.match(yearPattern);
+      console.log(matches)
+      
+      
+      // Extract years and count occurrences greater than or equal to the specified year
+      const count = matches
+        .map(match => parseInt(match.match(/\d{4}/)))
+        .filter(year => year >= currentYear-2 && year <= currentYear)
+        .length;
+      console.log(`Number of citations from ${currentYear} and later: ${count}`);
+      showPaper=tooltipContainer.querySelector('#show-paper')
+      if(count >= 3){
+        console.log(1) // return 1 if has at least 3 paper 
+        var icon = document.createElement("i");
+        icon.className = "fas fa-check";
+        icon.style.color = "green";
+        showPaper.insertBefore(icon,showPaper.firstChild);
+      }
+      else {
+        console.log(0); 
+        var icon = document.createElement("i");
+        icon.className = "fas fa-times";
+        icon.style.color = "red";
+        showPaper.insertBefore(icon, showPaper.firstChild);
+      }
+          }
         
         
         
@@ -896,6 +1013,7 @@ async function Loading(selectionTextRange, selectionText) {
                   <br>
                   <a id = "pros-cons"  >  Show pros and cons for each method </a>
                 </p>`;
+                checkYearPaper(input);
                 break;
                 case 'Option 5':
                   outputContainer.innerHTML = 
@@ -989,7 +1107,7 @@ async function Loading(selectionTextRange, selectionText) {
 
 
 bodyDOM.addEventListener("mouseup", () => {
-    
+    console.log("bấm bấm");
     showExtensionIcon();
 });
 
@@ -1007,13 +1125,11 @@ function showExtensionIcon() {
     const tooltipResult = document.querySelector('div#research-result-ext-uit')
     //if(tooltipResult) hideOnClickOutside(tooltipResult)
     //tooltipResult.remove();
-  
-
 
     selectionText= getSelectedText();
     if(selectionText.length >0) {  
         const [selectionTextNode, selectionTextRange, selectedElement, getRange]= getRangeSelectionText();
-
+        console.log("lần đầu:",selectionText);
         if(tooltipWrapper) tooltipWrapper.remove();
         renderTool(selectionTextRange, selectedElement, selectionText, getRange, selectionTextNode); // hiển thị icon extension cho user click
         tooltipWrapper = document.querySelector('div#research-ext-uit'); // Update the tooltipWrapper variable with the new tooltip
