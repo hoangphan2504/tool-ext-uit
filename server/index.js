@@ -49,7 +49,7 @@ app.get("/api/check", async (req, res) => {
           },
           {
             role: "user",
-            content: `Please provide the correct grammar version of this latex code: '${input}'. The response would be without any feedback and additional latex code.`,
+            content: `Please correct where error grammar: '${input}'.`
           },
           // { role: "user", content: `Please check the grammar of the sentence: ${input} and provide the corrected version, retain the latex code of the input. No addiontal feedback` },
           // { role: "assistant", content: "Sure, here's the corrected version:" }
