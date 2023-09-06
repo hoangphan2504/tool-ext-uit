@@ -125,8 +125,8 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
               console.log("render", selectionText);
                 Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
-              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-              const baseUrl = 'http://localhost:3001/api/check';
+              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              //const baseUrl = 'http://localhost:3001/api/check';
               //  Construct the complete URL
               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
@@ -428,8 +428,8 @@ async function Loading(selectionTextRange, selectionText) {
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            const baseUrl = 'http://localhost:3001/api/para';
-            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            //const baseUrl = 'http://localhost:3001/api/para';
+            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -770,8 +770,8 @@ async function Loading(selectionTextRange, selectionText) {
         let abs1Fetched = false
         async function fetchAbstract1() {
           try {
-            const baseUrl = 'http://localhost:3001/api/abstract1';
-            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            //const baseUrl = 'http://localhost:3001/api/abstract1';
+            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract1';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -784,8 +784,8 @@ async function Loading(selectionTextRange, selectionText) {
           let abs2Fetched = false
           async function fetchAbstract2() {
             try {
-             const baseUrl = 'http://localhost:3001/api/abstract2';
-              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
+             //const baseUrl = 'http://localhost:3001/api/abstract2';
+              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
               // Make the fetch request
               const result = await fetch(baseUrl);
               const resultJson = await result.json();
