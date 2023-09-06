@@ -1,6 +1,7 @@
 console.log("Content script is runnIng", chrome);
 const bodyDOM = document.querySelector("body");
 let selectionText = "";
+
 function injectHelperScript() {
   const scriptElement = document.createElement('script');
   scriptElement.src = chrome.runtime.getURL('diff_match_patch.js');
@@ -34,21 +35,23 @@ function getSelectedText() {
 
 function getSelectedTextNode() {
     var selectedText = '';
-  
     // window.getSelection
     if (window.getSelection) {
         selectedText = window.getSelection();
     }
+
     // document.getSelection
     else if (document.getSelection) {
         selectedText = document.getSelection();
     }
+
     // document.selection
     else if (document.selection) {
         selectedText =
             document.selection.createRange().text;
     } else return '';
     // To write the selected text into the textarea
+
     return selectedText;
 }
 
@@ -122,8 +125,8 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
               console.log("render", selectionText);
                 Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
-              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-              //const baseUrl = 'http://localhost:3001/api/check';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              const baseUrl = 'http://localhost:3001/api/check';
               //  Construct the complete URL
               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
@@ -139,9 +142,9 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                  const diffs = dmp.diff_main(selectionText, correctedGrammar);
                  dmp.diff_cleanupSemantic(diffs);
                 
-                 correctedGrammar = dmp.diff_prettyHtml(diffs);
+                correctedGrammar = dmp.diff_prettyHtml(diffs);
 
-                console.log("after corrrec", correctedGrammar);
+                console.log("after corrrect", correctedGrammar);
 
                 const input = resultJson.output.input;
 
@@ -206,7 +209,7 @@ async function Loading(selectionTextRange, selectionText) {
         paraphraseTab.style.fontWeight = 'normal';
   
         const outputContainer = tooltipContainer.querySelector('.output-textarea');
-  
+        console.log("outputContainer", outputContainer);
         let grammar; // Declare grammar variable here
         console.log(14, answer.replace(/\r?\n|\r/g, " ") === input);
         console.log(15, answer.replace(/\r?\n|\r/g, " "));
@@ -236,43 +239,57 @@ async function Loading(selectionTextRange, selectionText) {
           paraphraseTab.style.fontWeight = 'normal';
           // Update the output content with the suggestion content
           outputContainer.innerHTML = answer;
-  
+          attachEventListenersToDels();
+          
           // Enable/disable buttons based on conditions
           updateButtonState();
         }
 
         const acceptClicked = (element) => {
           // Check if del is a <del> tag
-            console.log(element.tagName);
+            console.log("tag",element);
           if (element && element.tagName === 'DEL') {
             console.log(1,"remove trong accept");
             const insTag = element.nextSibling;
-            if(insTag && insTag.tagName === 'INS' )
+            if(insTag && insTag.tagName === 'INS')
             {
               const text = insTag.textContent;
               const spanElement = document.createElement('span');
               spanElement.textContent = text;
               insTag.parentNode.replaceChild(spanElement, insTag);
             }
-            element.remove()
+            const elementText = element.textContent;
+            console.log(12321432,elementText);
+            if (elementText.includes("¶")) {
+            // If found, replace the entire content with "para<br>"
+            const spanElement = document.createElement('span');
+            spanElement.innerHTML =  "¶<br>";
+            console.log("span trong accept", spanElement);
+            element.parentNode.replaceChild(spanElement, element);
+           }
+           else{
+             element.remove()
+           }
           } 
           else {
             // If del is an <ins> tag, convert it to <span> and remove the background
             if (element && element.tagName === 'INS') {
-                    const text = element.textContent;
-                    const spanElement = document.createElement('span');
-                    spanElement.textContent = text;
-                    element.parentNode.replaceChild(spanElement, element);
+                const text = element.textContent;
+                const spanElement = document.createElement('span');
+                spanElement.textContent = text;
+               
+                console.log("span after", spanElement);
+                element.parentNode.replaceChild(spanElement, element);
                     //console.log(2, spanElement);
                    console.log("đổi span trong accept");
-                    
             }
           }
-          combineSpans()
-                // Hide the buttons after the operation
-                acceptButton.style.display = "none";
-                rejectButton.style.display = "none";
-                approveButton.style.display = "block";
+            answer = outputContainer.innerHTML
+            isCopied = false;
+            updateCopyButtonContent(isCopied)
+            acceptButton.style.display = "none";
+            rejectButton.style.display = "none";
+            approveButton.style.display = "block";
             copyButton.style.display = "block";
         }
           
@@ -285,16 +302,18 @@ async function Loading(selectionTextRange, selectionText) {
             } else {
               // If del is a <del> tag, convert it to <span> and remove the background
               if (element && element.tagName === 'DEL') {
-                const text = element.textContent;
+                const text = element.innerHTML;
                 const spanElement = document.createElement('span');
-                spanElement.textContent = text;
+                spanElement.innerHTML = text;
+    
+                console.log("span after", spanElement);
                 element.parentNode.replaceChild(spanElement, element);
-                console.log("đổi span trong reject");
     
               }
             }
-            combineSpans();
-            // Hide the buttons after the operation
+            answer = outputContainer.innerHTML
+            isCopied = false;
+            updateCopyButtonContent(isCopied)
             acceptButton.style.display = "none";
             rejectButton.style.display = "none";
             approveButton.style.display = "block";
@@ -305,15 +324,17 @@ async function Loading(selectionTextRange, selectionText) {
 
         const delGroupPressed = (event) => {
           clickedElement  = event.target; // Store the target element
+          console.log("event", event.target);
           rejectButton.style.display = "block";
           acceptButton.style.display = "block";
           approveButton.style.display = "none";
           copyButton.style.display = "none";
-
+          console.log("current", currentElement);
           if (currentElement !== null) {
             currentElement.style.fontWeight = "normal";
           }
           if (currentElement !== clickedElement) {
+            console.log("khác nè");
             clickedElement.style.fontWeight = "bold";
             currentElement = clickedElement;
           } else {
@@ -326,6 +347,7 @@ async function Loading(selectionTextRange, selectionText) {
 
         tooltipContainer.addEventListener("click", (event) => {
           const isInsideOutputTextarea = outputContainer.contains(event.target);
+          const dels = outputContainer.querySelectorAll("span, ins, del");
       
           if (isInsideOutputTextarea) {
             const isInsideElements = Array.from(dels).some((element) => {
@@ -342,14 +364,33 @@ async function Loading(selectionTextRange, selectionText) {
         }
       });
     
-    
+      
+      console.log("outputConain234", outputContainer);
+      const acceptButton = tooltipContainer.querySelector("#accept-button");
+      const rejectButton = tooltipContainer.querySelector("#reject-button");
+      
+      function attachEventListenersToDels() {
         const dels = outputContainer.querySelectorAll("span, ins, del");
-        const acceptButton = tooltipContainer.querySelector("#accept-button");
-        const rejectButton = tooltipContainer.querySelector("#reject-button");
-
+        
+        console.log("del ne", dels);
+      
         dels.forEach((element) => {
+          console.log("del");
           element.addEventListener("click", delGroupPressed);
-      });
+        });
+      }
+
+      attachEventListenersToDels();
+      // const dels = outputContainer.querySelectorAll("span, ins, del");
+      // const acceptButton = tooltipContainer.querySelector("#accept-button");
+      // const rejectButton = tooltipContainer.querySelector("#reject-button");
+
+      // console.log("del ne", dels);
+
+      // dels.forEach((element) => {
+      //   console.log("del");
+      //   element.addEventListener("click", delGroupPressed);
+      // });
 
         //dels.addEventListener("click", delGroupPressed);
     
@@ -387,8 +428,8 @@ async function Loading(selectionTextRange, selectionText) {
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/para';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/para';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -405,7 +446,7 @@ async function Loading(selectionTextRange, selectionText) {
           let status =isCopiedPara;
           updateCopyButtonContent(status);
           console.log("para", isCopied, " ", isCopiedPara);
-          outputContainer.textContent = parap;
+          outputContainer.innerHTML = parap;
           // Remove the active-tab class from the suggestionTab
           suggestionTab.classList.remove('active-tab');
           // Add the active-tab class to the paraphraseTab
@@ -419,7 +460,7 @@ async function Loading(selectionTextRange, selectionText) {
             fetchParaphrase()
               .then(parap => {
                 // Update the output container with the paraphrase result
-                outputContainer.textContent = parap;
+                outputContainer.innerHTML = parap;
                 // Set the flag to true indicating that the paraphrase has been fetched
                 paraphraseFetched = true;
               })
@@ -473,17 +514,18 @@ async function Loading(selectionTextRange, selectionText) {
 
         // Add event listener to the "Approve" button
         approveButton.addEventListener('click', () => {
-          const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
-          const outputContent = isSuggestionTabActive ? answer: parap;
+          //const isSuggestionTabActive = suggestionTab.classList.contains('active-tab');
           
-          console.log(100000, outputContainer.innerHTML);
-
+          const outputTextarea = tooltipContainer.querySelector('.output-textarea');
           var tempElement = document.createElement("div");
-          tempElement.innerHTML = outputContainer.innerHTML;
+          tempElement.innerHTML = outputTextarea.innerHTML;
+          console.log("temp", tempElement);
           
           // Get all ins elements within the temporary element
-          var insElements = tempElement.getElementsByTagName("ins");
-          
+          var delElements = tempElement.getElementsByTagName("DEL");
+          console.log("delfiest", delElement);
+          var insElements = tempElement.getElementsByTagName("INS");
+          console.log("ins", insElement);
           // Convert ins tags to span tags and remove background
           for (var i = 0; i < insElements.length; i++) {
               var insElement = insElements[i];
@@ -493,33 +535,34 @@ async function Loading(selectionTextRange, selectionText) {
           }
           
           // Remove del tags
-          var delElements = tempElement.getElementsByTagName("del");
+          var delElements = tempElement.getElementsByTagName("DEL");
+          console.log("ban", tempElement);
+          console.log("del", delElements);
           for (var i = delElements.length - 1; i >= 0; i--) {
-              var delElement = delElements[i];
-              delElement.parentNode.removeChild(delElement);
-          }
+            var delElement = delElements[i];
+            delElement.parentNode.removeChild(delElement);
+        }
+
           
           // Combine span elements into one span
           var combinedSpanText = "";
           var spanElements = tempElement.getElementsByTagName("span");
+          console.log("span", spanElements);
+          console.log("span length", spanElements[0], " ", spanElements[1]);
           for (var i = 0; i < spanElements.length; i++) {
-              combinedSpanText += spanElements[i].innerHTML;
+              combinedSpanText += spanElements[i].textContent;
+              console.log("checkk",combinedSpanText);
           }
         
-          // Combine span elements into a single span
-          var combinedText = "";
-          for (var i = 0; i < spanElements.length; i++) {
-            combinedText += spanElements[i].innerHTML;
-          }
           
-
-          let op = combinedText;
-          console.log("op", op);
+          console.log("finish", combinedSpanText);
+          combinedSpanText = combinedSpanText.replace(/¶/g, "\n")
+          console.log("finish2", combinedSpanText);
           
           try {
             if (selectionTextNode.rangeCount) {
               getRange.deleteContents();
-              getRange.insertNode(document.createTextNode(op));
+              getRange.insertNode(document.createTextNode(combinedSpanText));
             }
             tooltipWrapper.remove();
           } catch (error) {
@@ -547,7 +590,56 @@ async function Loading(selectionTextRange, selectionText) {
 
           isCopied  = isSuggestionTabActive ? isCopiedGrammar : isCopiedPara;
           console.log(isCopiedGrammar, isCopiedPara);
-          navigator.clipboard.writeText(text)
+
+
+
+
+          const outputTextarea = tooltipContainer.querySelector('.output-textarea');
+          var tempElement = document.createElement("div");
+          tempElement.innerHTML = outputTextarea.innerHTML;
+          console.log("temp", tempElement);
+          
+          // Get all ins elements within the temporary element
+          var delElements = tempElement.getElementsByTagName("DEL");
+          console.log("delfiest", delElement);
+          var insElements = tempElement.getElementsByTagName("INS");
+          console.log("ins", insElement);
+          // Convert ins tags to span tags and remove background
+          for (var i = 0; i < insElements.length; i++) {
+              var insElement = insElements[i];
+              var newSpan = document.createElement("span");
+              newSpan.innerHTML = insElement.innerHTML;
+              insElement.parentNode.replaceChild(newSpan, insElement);
+          }
+          
+          // Remove del tags
+          var delElements = tempElement.getElementsByTagName("DEL");
+          console.log("ban", tempElement);
+          console.log("del", delElements);
+          for (var i = delElements.length - 1; i >= 0; i--) {
+            var delElement = delElements[i];
+            delElement.parentNode.removeChild(delElement);
+        }
+
+          
+          // Combine span elements into one span
+          var combinedSpanText = "";
+          var spanElements = tempElement.getElementsByTagName("span");
+          console.log("span", spanElements);
+          console.log("span length", spanElements[0], " ", spanElements[1]);
+          for (var i = 0; i < spanElements.length; i++) {
+              combinedSpanText += spanElements[i].textContent;
+              console.log("checkk",combinedSpanText);
+          }
+        
+          
+          console.log("finish", combinedSpanText);
+          combinedSpanText = combinedSpanText.replace(/¶/g, "\n")
+          console.log("finish2", combinedSpanText);
+
+          let copytext = isSuggestionTabActive ? combinedSpanText : parap;
+
+          navigator.clipboard.writeText(copytext)
             .then(() => {
               console.log('Text copied to clipboard');
               console.log(isCopied);
@@ -678,8 +770,8 @@ async function Loading(selectionTextRange, selectionText) {
         let abs1Fetched = false
         async function fetchAbstract1() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/abstract1';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/abstract1';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -692,8 +784,8 @@ async function Loading(selectionTextRange, selectionText) {
           let abs2Fetched = false
           async function fetchAbstract2() {
             try {
-             //const baseUrl = 'http://localhost:3001/api/abstract2';
-              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
+             const baseUrl = 'http://localhost:3001/api/abstract2';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
               // Make the fetch request
               const result = await fetch(baseUrl);
               const resultJson = await result.json();
@@ -899,6 +991,103 @@ async function Loading(selectionTextRange, selectionText) {
         showPaper.insertBefore(icon, showPaper.firstChild);
       }
           }
+
+          function checkFigureCaption(input) {
+            const figureRegex = /\\begin{figure\*?}[\s\S]*?\\end{figure\*?}|\\begin{figure\*?}[\s\S]*?\\caption[\s\S]*?\\end{figure\*?}|\\begin{figure\*?}[\s\S]*?(?=\\end{figure\*?}|\\caption|$)/g;
+          
+            // Find all figure environments in the input
+            const figureMatches = input.match(figureRegex);
+            console.log(figureMatches);
+            
+            // Initialize a counter for figures with captions
+            let figureCountWithCaption = 0;
+            
+            // Initialize a flag to track whether all figures have captions
+            let allFiguresHaveCaption = true;
+            
+            // Check if any of the figure environments contain a \caption
+            if (figureMatches) {
+              for (const figureContent of figureMatches) {
+                if (figureContent.includes('\caption')) {
+                  allFiguresHaveCaption = true;
+                  figureCountWithCaption++;
+                } else {
+                  allFiguresHaveCaption = false;
+                  break;
+                }
+              }
+            }
+            if (allFiguresHaveCaption) {
+              console.log(`There are ${figureCountWithCaption} figures, and all have captions.`);
+            } else {
+              console.log(`There are ${figureCountWithCaption} figures, and not all have captions.`);
+            }
+            showPaper=tooltipContainer.querySelector('#figureCaption')
+            if(allFiguresHaveCaption){
+             console.log(1) // 
+             console.log(`There are ${figureCountWithCaption} figures, and all have captions.`); 
+             var icon = document.createElement("i");
+             icon.className = "fas fa-check";
+             icon.style.color = "green";
+             showPaper.insertBefore(icon,showPaper.firstChild);
+            }
+            else {
+             console.log(0);
+             var icon = document.createElement("i");
+             icon.className = "fas fa-times";
+             icon.style.color = "red";
+             showPaper.insertBefore(icon, showPaper.firstChild);
+            }
+             }
+          // check caption in proposed method
+          function checkClearlyCaption(input){
+            const figureRegex = /\\begin{figure\*?}[\s\S]*?\\end{figure\*?}|\\begin{figure\*?}[\s\S]*?\\caption[\s\S]*?\\end{figure\*?}|\\begin{figure\*?}[\s\S]*?(?=\\end{figure\*?}|\\caption|$)/g;
+          
+            // Find all figure environments in the input
+            const figureMatches = input.match(figureRegex);
+            console.log(figureMatches);
+          
+            // Initialize a counter for figures with captions
+            let figureCountWithCaption = 0;
+            
+            // Initialize a flag to track whether all figures have captions
+            let allFiguresHaveCaption = true;
+            
+            // Check if any of the figure environments contain a \caption
+            if (figureMatches) {
+              for (const figureContent of figureMatches) {
+                if (figureContent.includes('\caption')) {
+                  allFiguresHaveCaption = true;
+                  figureCountWithCaption++;
+                } else {
+                  allFiguresHaveCaption = false;
+                  break;
+                }
+              }
+            }
+            if (allFiguresHaveCaption) {
+              console.log(`There are ${figureCountWithCaption} figures, and all have captions.`);
+            } else {
+              console.log(`There are ${figureCountWithCaption} figures, and not all have captions.`);
+            }
+            showPaper=tooltipContainer.querySelector('#clearly-caption')
+            if(allFiguresHaveCaption){
+             console.log(1) // 
+             console.log(`There are ${figureCountWithCaption} figures, and all have captions.`); 
+             var icon = document.createElement("i");
+             icon.className = "fas fa-check";
+             icon.style.color = "green";
+             showPaper.insertBefore(icon,showPaper.firstChild);
+            }
+            else {
+             console.log(0);
+             var icon = document.createElement("i");
+             icon.className = "fas fa-times";
+             icon.style.color = "red";
+             showPaper.insertBefore(icon, showPaper.firstChild);
+            }
+          
+          }
         
         
         
@@ -1000,10 +1189,11 @@ async function Loading(selectionTextRange, selectionText) {
                   <br>
                   <a id = "highly-general-idea" > Solution for the problem is highly general (Don't use combine,using) </a>
                   <br>
+                 <a id = "figureCaption" >All Figures have caption </a>
                   </p>`;
                 console.log(tooltipContainer.querySelector('#superior-image'));
                 checkTeaser(input);
-                
+                checkFigureCaption(input)
                 GeneralIdea(input);
                   break;
               case 'Option 4':
@@ -1023,9 +1213,13 @@ async function Loading(selectionTextRange, selectionText) {
                   <a id = "caption"  >   Caption describe the main components of General Scheme </a>
                   <br>              
                   <a id = "formula"> Explicit formula</a>
-                </p>`;
-                checkProposedMethod(input);
-                break;
+                  <br>
+                  <a id = clearly-caption> Has caption </a>
+
+               </p>`;
+               checkProposedMethod(input);
+               checkClearlyCaption(input);
+              break;
               case 'Option 6':
                 outputContainer.innerHTML = 
                 `<p class = "Experiments" id = "Experiments" > 
