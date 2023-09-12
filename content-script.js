@@ -142,9 +142,11 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                  const diffs = dmp.diff_main(selectionText, correctedGrammar);
                  dmp.diff_cleanupSemantic(diffs);
                 
+                let grammarBox = correctedGrammar.includes("No error")? "No grammar error": dmp.diff_prettyHtml(diffs);
                 correctedGrammar = dmp.diff_prettyHtml(diffs);
 
                 console.log("after corrrect", correctedGrammar);
+
 
                 const input = resultJson.output.input;
 
@@ -153,7 +155,7 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                 //remove loading 
                 const loading = document.querySelector('div#loading-ext-uit')
                 loading.remove();
-                renderResult(selectionTextRange, selectionText, correctedGrammar, input, selectedElement, getRange, selectionTextNode, newVersion);
+                renderResult(selectionTextRange, selectionText, grammarBox, input, selectedElement, getRange, selectionTextNode, newVersion);
             } 
             catch(err){
                 console.log(err);
