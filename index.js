@@ -113,13 +113,12 @@ app.get("/api/abstract1", async (req, res) => {
   console.log("check check");
   if(input != "") {
         // paraphrase
-
         const abstractv1 = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Does it show any solution in this text ? the text is: '${input}'` },
+            content: `Does the content of this text show solution to the problem ? the text is: '${input}' and please return yes or no` },
           ]
         });
 
@@ -162,7 +161,7 @@ app.get("/api/abstract2", async (req, res) => {
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Does it show a current unsolved problem which is a very deep problem, not a general problem all problems are encountered in this text ? The text  is : '${input}'` },
+            content: `Does the content of this text show a current unsolved problem , this is a very deep problem, not a general problem all problems are encountered ? The text is : '${input}' and please return yes or no` },
           ]
         });
 
