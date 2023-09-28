@@ -142,7 +142,11 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                  const diffs = dmp.diff_main(selectionText, correctedGrammar);
                  dmp.diff_cleanupSemantic(diffs);
                 
-                let grammarBox = correctedGrammar.includes("No error")? "No grammar error": dmp.diff_prettyHtml(diffs);
+                const pattern = /no\s+(grammar|grammatical\s+)?error(s)?/i;
+
+                 // Use the test method to check if the sentence contains the pattern
+ 
+                let grammarBox = pattern.test(correctedGrammar)? "No grammar error": dmp.diff_prettyHtml(diffs); 
                 correctedGrammar = dmp.diff_prettyHtml(diffs);
 
                 console.log("after corrrect", correctedGrammar);
