@@ -42,7 +42,7 @@
       /* Add display: flex to make the links expand */
       display: flex;
       /* Adjust the padding as needed */
-      text-align: center;
+      text-align: left;
       padding: 0 25px;
       /* ... Your existing styles ... */
     }
@@ -165,61 +165,19 @@
   margin-right: 5px;
 }
 .close-button {
-  position: absolute;
-  top: 10px;
-  right: -30px;
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-  color: black;
-  font-size: 15px;
-  transition: transform 0.2s ease-in-out;
-  -webkit-transition:-webkit-transform .25s, opacity .25s;
-  -moz-transition:-moz-transform .25s, opacity .25s;
-  transition: transform .25s, opacity .25s;
-  
-  border-radius: 50%;
-  padding: 0.5em;
-  border: 0.5px solid  black;
-  
+      position: absolute;
+      top: 4px;
+      right: 15px;
+      cursor: pointer;
+      color: white;
+      font-size: 28px;
+      transition: transform 0.2s ease-in-out;
     }
 
     .close-button:hover {
       transform: scale(1.2);
-      -webkit-transform: rotate(350deg);
-    -moz-transform: rotate(360deg);
-    transform: rotate(360deg);
-		opacity:1;
-  
-
     }
-    .close-button::before {
-  content: " ";
-  position: absolute;
-  display: block;
-  background-color: black;
-  
-  width: 2px;
-  left: 11px;
-  top: 4px;
-  bottom: 5.5px;
- 
-  
-  transform: rotate(45deg);
-}
-.close-button::after {
-  content: " ";
-  position: absolute;
-  display: block;
-  background-color: black;
-  transform: rotate(45deg);
-  height: 2px;
-  top: 10px;
-  left: 5px;
-  right: 4.5px;
-  
-  background-color: black;
-}
+
 
     .output h2 .dropdown {
       position: relative;
@@ -353,9 +311,9 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
 
   <body> 
     <div class="box">
-      <button class="close-button">
-        
-      </button>
+      <span class="close-button">
+        <i class="fas fa-times"></i>
+      </span>
       
     <div class="output">
         <h2> 
@@ -370,6 +328,7 @@ background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(39,243,198,0.93461134
               <a href="#" data-section="Option 5">Proposed method</a>
               <a href="#" data-section="Option 6">Experiments</a>
               <a href="#" data-section="Option 7">Conclusion</a>
+              <a href="#" data-section="Option 8"> References</a>
             </div>
           </span>
         </h2>
