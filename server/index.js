@@ -113,13 +113,12 @@ app.get("/api/abstract1", async (req, res) => {
   console.log("check check");
   if(input != "") {
         // paraphrase
-
         const abstractv1 = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Does this text show any solution to the unsolved problem  in this latex code ? the latex code is: '${input}'` },
+            content: `Does the content of this text show solution to the problem ? the text is: '${input}' and please return yes or no` },
           ]
         });
 
@@ -148,7 +147,42 @@ app.get("/api/abstract1", async (req, res) => {
   }
   else console.log("chua truy cap duoc if tren");
 })
-
+// =------------------------------- Related work check ---------------------------
+app.get("/api/related_work",async (req,res) => {
+  const input = paraInput;
+  console.log(input, "related_work");
+  let Result = "";
+  console.log("check check");
+  if (input != "") {
+    const related_work = await openai.createChatCompletion({
+      model : "gpt-3.5-turbo",
+      messages: [
+        { role : "user",
+        content : `Does the content of this text show advantages and disadvantages of each method that were mentioned ? The text is : '${input}' and please return yes or no`
+        },
+      ]
+    });
+const relatedWork = related_work .data.choices[0].message.content;
+console.log("related_work", relatedWork.substring(0,3));
+let firstThreeLetters;
+if(relatedWork.startsWith('Yes')) {
+  firstThreeLetters = relatedWork.substring(0,3);
+}
+else if (relatedWork.startsWith('No')){
+  firstThreeLetters = relatedWork.substring(0,2);
+}
+else {
+  console.log("The substring doesn't start with Yes or No first");
+}
+console.log(firstThreeLetters);
+relatedWorkResult = firstThreeLetters;
+res.status(200).json({output : relatedWorkResult});
+}
+else {
+  console.log("Chua truy cap duoc if tren");
+}
+})
+// ---------------------------------------------------------------------------
 app.get("/api/abstract2", async (req, res) => {
   const input = paraInput;
   console.log(input, "abstract_2");
@@ -162,7 +196,7 @@ app.get("/api/abstract2", async (req, res) => {
           messages: [
           // Include previous conversation messages
             { role: "user", 
-            content: `Does it show a current unsolved problem of the problem, this is a very deep problem, not a general problem all problems are encountered in this latex code? The latex code is : '${input}'` },
+            content: `Does the content of this text show a current unsolved problem , this is a very deep problem, not a general problem all problems are encountered ? The text is : '${input}' and please return yes or no` },
           ]
         });
 
