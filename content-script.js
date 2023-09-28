@@ -18,6 +18,7 @@ function getSelectedText() {
   // window.getSelection
   if (window.getSelection) {
       selectedText = window.getSelection().toString();
+      console.log("vô window");
   }
   // document.getSelection
   else if (document.getSelection) {
@@ -25,13 +26,12 @@ function getSelectedText() {
   }
   // document.selection
   else if (document.selection) {
-      selectedText =
-          document.selection.createRange().text;
+      selectedText = document.selection.createRange().text;
   } else return '';
   // To write the selected text into the textarea
-  console.log("trong h");
   return selectedText;
 }
+
 
 function getSelectedTextNode() {
     var selectedText = '';
@@ -70,47 +70,37 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
     tooltipWrapper.id = 'research-ext-uit';
     const tooltipIcon = document.createElement('div');
     tooltipIcon.classList.add("research-ext-icon");
-    tooltipIcon.innerHTML = `<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-    width="20.000000pt" height="20.000000pt" viewBox="0 0 512.000000 512.000000"
-    preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
-  fill="#000" stroke="none"><path d="M2360 5109 c-451 -51 -883 -283 -1173 -628 -439 -523 -548 -1242
-  -283 -1863 96 -225 209 -391 386 -568 140 -140 265 -234 417 -312 l103 -53 0
-  -237 0 -238 -75 0 -75 0 0 -225 0 -225 75 0 75 0 0 -150 0 -150 73 0 72 0 44
-  -218 c24 -119 46 -223 49 -229 3 -10 57 -13 223 -13 l219 0 0 40 0 40 70 0 70
-  0 0 -40 0 -40 219 0 c166 0 220 3 223 13 3 6 25 110 49 229 l44 218 73 0 72 0
-  0 150 0 150 75 0 75 0 0 225 0 225 -75 0 -75 0 0 238 0 237 71 35 c168 82 345
-  215 486 364 455 481 608 1170 401 1801 -39 119 -142 328 -217 440 -368 550
-  -1033 858 -1691 784z m475 -163 c612 -103 1127 -558 1304 -1153 51 -172 65
-  -278 65 -483 0 -161 -4 -201 -27 -311 -111 -526 -445 -951 -924 -1176 l-93
-  -43 0 -285 0 -285 -260 0 -260 0 0 362 0 362 233 235 c128 130 254 265 279
-  301 167 238 242 509 217 793 -22 254 -129 505 -290 681 l-52 57 -49 -48 c-26
-  -26 -48 -51 -48 -56 0 -4 22 -34 48 -66 113 -136 189 -292 224 -461 16 -78 19
-  -122 15 -245 -5 -175 -28 -271 -101 -420 -62 -126 -126 -206 -310 -390 l-161
-  -160 -3 455 -2 455 135 135 135 135 -52 53 -53 52 -82 -82 -83 -83 0 168 0
-  167 -80 0 -80 0 0 -392 0 -393 -83 83 -83 82 -52 -53 -52 -52 135 -135 135
-  -135 0 -230 0 -230 -176 175 c-239 238 -314 354 -376 578 -18 65 -22 105 -22
-  252 0 211 16 286 99 455 73 148 119 206 354 440 l201 200 123 -123 122 -122
-  53 53 52 52 -175 175 -175 175 -266 -265 c-146 -146 -288 -294 -315 -330 -72
-  -94 -164 -285 -194 -403 -89 -353 -25 -702 183 -997 25 -36 151 -171 279 -301
-  l233 -235 0 -362 0 -362 -260 0 -260 0 0 288 0 287 -61 25 c-33 13 -104 49
-  -158 80 -429 248 -717 660 -807 1155 -25 138 -25 412 0 550 132 732 703 1271
-  1443 1365 94 12 349 4 458 -14z m475 -3961 l0 -75 -750 0 -750 0 0 75 0 75
-  750 0 750 0 0 -75z m-150 -300 l0 -75 -600 0 -600 0 0 75 0 75 600 0 600 0 0
-  -75z"/>
-  </g></svg>`;
-    tooltipWrapper.appendChild(tooltipIcon);
+
+
+
+    
+    tooltipIcon.innerHTML = `<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" fill="none"><?xml version="1.0" ?><svg data-name="Layer 1" id="Layer_1" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#ffc43d;}.cls-2{fill:#faae17;}.cls-3{fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}.cls-4{fill:#727373;}.cls-5{fill:#606161;}</style></defs><title/><path class="cls-1" d="M370.44,222.29a120.44,120.44,0,1,0-229.76,50.59l58.4,127.88H300.92l58.4-127.88A120,120,0,0,0,370.44,222.29Z"/><path class="cls-2" d="M250,101.85a120.44,120.44,0,0,0-16.1,1.2,120.37,120.37,0,0,1,93.22,169.83l-58.4,127.88h32.2l58.4-127.88A120.48,120.48,0,0,0,250,101.85Z"/><line class="cls-3" x1="250" x2="250" y1="10.88" y2="50.42"/><line class="cls-3" x1="398.45" x2="370.72" y1="73.67" y2="101.85"/><line class="cls-3" x1="456.14" x2="416.61" y1="223.18" y2="223.18"/><line class="cls-3" x1="101.55" x2="129.28" y1="73.67" y2="101.85"/><line class="cls-3" x1="43.86" x2="83.39" y1="223.18" y2="223.18"/><path class="cls-3" d="M370.44,222.29a120.44,120.44,0,1,0-229.76,50.59l58.4,127.88H300.92l58.4-127.88A120,120,0,0,0,370.44,222.29Z"/><path class="cls-4" d="M199,400.76H301a0,0,0,0,1,0,0v37.39a51,51,0,0,1-51,51h0a51,51,0,0,1-51-51V400.76A0,0,0,0,1,199,400.76Z"/><path class="cls-5" d="M268.77,400.76v37.39a51,51,0,0,1-34.87,48.33,50.78,50.78,0,0,0,16.1,2.64h0a51,51,0,0,0,51-51V400.76Z"/><path class="cls-3" d="M199,400.76H301a0,0,0,0,1,0,0v37.39a51,51,0,0,1-51,51h0a51,51,0,0,1-51-51V400.76A0,0,0,0,1,199,400.76Z"/><line class="cls-3" x1="186.39" x2="313.61" y1="436.13" y2="436.13"/><line class="cls-3" x1="186.39" x2="313.61" y1="400.76" y2="400.76"/></svg></svg>`
+     tooltipWrapper.appendChild(tooltipIcon);
 
     // determine top, left of tooltip
-    const top = selectionTextRange.top + selectionTextRange.height + 1  + 'px';
-    const left = selectionTextRange.left + (selectionTextRange.width / 2) + 20  -  (tooltipWrapper.offsetWidth/2) + 'px';
+    // const top = selectionTextRange.top + selectionTextRange.height + 1  + 'px';
+    // const left = selectionTextRange.left + (selectionTextRange.width / 2) + 20  -  (tooltipWrapper.offsetWidth/2) + 'px';
 
-    tooltipWrapper.style.position = 'absolute';
-    tooltipWrapper.style.background = 'white';
-    tooltipWrapper.style.cursor = 'pointer';
-    tooltipWrapper.style.padding = '4px';
-    tooltipWrapper.style.top = top;
-    tooltipWrapper.style.left = left;
+    // tooltipWrapper.style.position = 'absolute';
+    // tooltipWrapper.style.background = 'white';
+    // tooltipWrapper.style.cursor = 'pointer';
+    // tooltipWrapper.style.padding = '4px';
+    // tooltipWrapper.style.top = top;
+    // tooltipWrapper.style.left = left;
 
+
+
+    const tooltipWidth = tooltipWrapper.offsetWidth;
+  const tooltipHeight = tooltipWrapper.offsetHeight;
+  const top = (window.innerHeight - tooltipHeight) / 2 + 'px';
+  const left = (window.innerWidth - tooltipWidth) / 2 + 'px';
+
+  tooltipWrapper.style.position = 'fixed';
+  tooltipWrapper.style.background = 'white';
+  tooltipWrapper.style.cursor = 'pointer';
+  tooltipWrapper.style.padding = '4px';
+  tooltipWrapper.style.top = top;
+  tooltipWrapper.style.left = left;
 
     bodyDOM.appendChild(tooltipWrapper);
 
@@ -125,8 +115,8 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
               console.log("render", selectionText);
                 Loading(selectionTextRange, selectionText);
               // // Define the base URL based on the mode
-              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
-              //const baseUrl = 'http://localhost:3001/api/check';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/check';
+              const baseUrl = 'http://localhost:3001/api/check';
               //  Construct the complete URL
               const url = `${baseUrl}?input=${encodeURIComponent(selectionText)}`;
 
@@ -142,7 +132,11 @@ function renderTool(selectionTextRange, selectedElement, selectionText, getRange
                  const diffs = dmp.diff_main(selectionText, correctedGrammar);
                  dmp.diff_cleanupSemantic(diffs);
                 
-                let grammarBox = correctedGrammar.includes("No error")? "No grammar error": dmp.diff_prettyHtml(diffs);
+                 const pattern = /No\s+(grammar|grammatical\s+)?error(s)?/i;
+
+                // Use the test method to check if the sentence contains the pattern
+
+                let grammarBox = pattern.test(correctedGrammar)? "No grammar error": dmp.diff_prettyHtml(diffs);
                 correctedGrammar = dmp.diff_prettyHtml(diffs);
 
                 console.log("after corrrect", correctedGrammar);
@@ -430,8 +424,8 @@ async function Loading(selectionTextRange, selectionText) {
   // Function to fetch the paraphrase result
         async function fetchParaphrase() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/para';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
+            const baseUrl = 'http://localhost:3001/api/para';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -772,8 +766,8 @@ async function Loading(selectionTextRange, selectionText) {
         let abs1Fetched = false
         async function fetchAbstract1() {
           try {
-            //const baseUrl = 'http://localhost:3001/api/abstract1';
-            const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract1';
+            const baseUrl = 'http://localhost:3001/api/abstract1';
+            //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/para';
             // Make the fetch request
             const result = await fetch(baseUrl);
             const resultJson = await result.json();
@@ -786,8 +780,8 @@ async function Loading(selectionTextRange, selectionText) {
           let abs2Fetched = false
           async function fetchAbstract2() {
             try {
-             //const baseUrl = 'http://localhost:3001/api/abstract2';
-              const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
+             const baseUrl = 'http://localhost:3001/api/abstract2';
+              //const baseUrl = 'https://mmlab.uit.edu.vn/check-paper/api/abstract2';
               // Make the fetch request
               const result = await fetch(baseUrl);
               const resultJson = await result.json();
@@ -1312,6 +1306,14 @@ bodyDOM.addEventListener("keyup", (event) => {
     if (event.shiftKey && event.key.includes("Arrow")) {
         showExtensionIcon();
     }
+});
+
+bodyDOM.addEventListener("keydown", (event) => {
+  if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
+    event.preventDefault(); // Prevents the default Ctrl + A behavior (select all)
+    console.log("Ctrl + A pressed");
+    showExtensionIcon();
+  }
 });
 
 
